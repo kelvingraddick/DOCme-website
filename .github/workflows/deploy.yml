@@ -1,0 +1,28 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - name: Setup Node.js
+      uses: actions/setup-node@v2.1.2
+    - name: Install project
+      run: 
+        npm install
+    - name: Build and export project
+      run: 
+        npm run build
+    - name: ftp-action
+      uses: sebastianpopp/ftp-action@v2.0.0
+      with:
+        host: "${{ secrets.FTP_SERVER }}"
+        user: "${{ secrets.FTP_USERNAME }}"
+        password: "${{ secrets.FTP_PASSWORD }}"
+        localDir: "out"
+        remoteDir: "DOCme-website"
