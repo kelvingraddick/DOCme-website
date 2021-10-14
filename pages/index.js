@@ -1,3 +1,4 @@
+import { SearchIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
 import Colors from '../constants/colors';
 
@@ -21,7 +22,7 @@ export default function Home() {
               <select
                 id="speciality"
                 name="Speciality"
-                className="form-select mt-1 block w-full pl-3 pr-10 py-2 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="form-select mt-1 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 defaultValue="Dentist"
               >
                 <option>Dentist</option>
@@ -34,13 +35,35 @@ export default function Home() {
               <select
                 id="location"
                 name="Location"
-                className="form-select mt-2 block w-full pl-3 pr-10 py-2 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="form-select mt-2 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 defaultValue="New York, NY, USA"
               >
                 <option>Atlanta, GA, USA</option>
                 <option>New York, NY, USA</option>
               </select>
             </div>
+            <div>
+              <label htmlFor="location" className="sr-only">
+                Insurance carrier
+              </label>
+              <select
+                id="insurance-carrier"
+                name="Insurance carrier"
+                className="form-select mt-2 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                defaultValue="United Healthcare Dental"
+              >
+                <option>United Healthcare Dental</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="form-button group relative w-full flex justify-center mt-2 py-4 px-4 border border-transparent text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Find
+              <span className="absolute right-2 inset-y-0 flex items-center pl-3">
+                <SearchIcon className="h-5 w-5 text-white group-hover:text-gray" aria-hidden="true" />
+              </span>
+            </button>
           </div>
         </div>
         <style jsx>{`
@@ -51,6 +74,9 @@ export default function Home() {
             background-color: ${Colors.HIGH_LIGHT};
             border: none;
             color: ${Colors.DARK_BLUE};
+          }
+          .form-button {
+            background-color: ${Colors.DARK_BLUE};
           }
         `}</style>
       </div>
