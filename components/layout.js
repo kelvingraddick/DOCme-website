@@ -10,8 +10,8 @@ const user = {
   imageUrl:'../images/placeholder-user.png',
 }
 const navigation = [
-  { name: 'Search', href: '#', current: true },
-  { name: 'Appointments', href: '#', current: false },
+  { name: 'Search', href: '/', current: true },
+  { name: 'Appointments', href: '/appointments', current: false },
   { name: 'My Account', href: '#', current: false }
 ]
 const userNavigation = [
@@ -131,7 +131,7 @@ export default function Layout({ children }) {
                     href={item.href}
                     className={classNames(
                       item.current
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                        ? 'navigation-button-selected text-indigo-900'
                         : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800',
                       'block pl-3 pr-4 py-2 border-l-4 text-base font-medium'
                     )}
@@ -177,7 +177,7 @@ export default function Layout({ children }) {
 
       <div>
         <main>
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="min-h-screen max-w-7xl mx-auto sm:px-6 lg:px-8">
             {children}
           </div>
         </main>
