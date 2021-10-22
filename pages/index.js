@@ -1,8 +1,64 @@
+import React, { useState, useEffect } from 'react';
 import { SearchIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
+import SearchModal from '../components/searchModal';
 import Colors from '../constants/colors';
+import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
 export default function Home() {
+  const [isSpecialtySearchModalVisible, setIsSpecialtySearchModalVisible] = useState(false);
+  const [specialtyOptions, setSpecialtyOptions] = useState([]);
+  const [selectedSpecialtyOption, setSelectedSpecialtyOption] = useState({});
+  const [isLocationSearchModalVisible, setIsLocationSearchModalVisible] = useState(false);
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [selectedLocationOption, setSelectedLocationOption] = useState({});
+  const {placePredictions, getPlacePredictions} = usePlacesService({ apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY });
+
+  const onSpecialtySearchBoxChangeText = async function(text) {
+    if (!text) return [];
+
+    var specialties = await fetch('http://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          if (responseJson.isSuccess) {
+            return responseJson.specialties;
+          }
+        })
+      }
+      return undefined;
+    })
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
+  
+    setSpecialtyOptions(specialties);
+  }
+  
+  const onSpecialtyOptionSelected = function(option) {
+    setSelectedSpecialtyOption(option);
+    setIsSpecialtySearchModalVisible(false);
+    setSpecialtyOptions([]);
+  }
+
+  const onLocationSearchBoxChangeText = async function(text) {
+    if (!text) return [];
+    getPlacePredictions({ input: text });
+  }
+
+  useEffect(() => {
+    if (placePredictions.length) 
+      setLocationOptions(placePredictions.map((placePrediction) => ({ id: placePrediction.place_id, name: placePrediction.description })));
+  }, [placePredictions]);
+
+  const onLocationOptionSelected = function(option) {
+    setSelectedLocationOption(option);
+    setIsLocationSearchModalVisible(false);
+    setLocationOptions([]);
+  }
+
   return (
     <Layout>
       <div className="px-4 pt-1 sm:px-0">
@@ -19,28 +75,31 @@ export default function Home() {
               <label htmlFor="speciality" className="sr-only">
                 Speciality
               </label>
-              <select
-                id="speciality"
-                name="Speciality"
-                className="form-select mt-1 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                defaultValue="Dentist"
-              >
-                <option>Dentist</option>
-              </select>
+              <input
+                type="text"
+                name="specialty"
+                id="specialty"
+                className="form-input mt-1 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                placeholder="Select a speciality"
+                readOnly
+                value={selectedSpecialtyOption.name}
+                onClick={() => setIsSpecialtySearchModalVisible(true)}
+              />
             </div>
             <div>
               <label htmlFor="location" className="sr-only">
                 Location
               </label>
-              <select
+              <input
+                type="text"
+                name="location"
                 id="location"
-                name="Location"
-                className="form-select mt-2 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                defaultValue="New York, NY, USA"
-              >
-                <option>Atlanta, GA, USA</option>
-                <option>New York, NY, USA</option>
-              </select>
+                className="form-input mt-1 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                placeholder="Select a location"
+                readOnly
+                value={selectedLocationOption.name}
+                onClick={() => setIsLocationSearchModalVisible(true)}
+              />
             </div>
             <div>
               <label htmlFor="location" className="sr-only">
@@ -49,7 +108,7 @@ export default function Home() {
               <select
                 id="insurance-carrier"
                 name="Insurance carrier"
-                className="form-select mt-2 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="form-input mt-2 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 defaultValue="United Healthcare Dental"
               >
                 <option>United Healthcare Dental</option>
@@ -66,17 +125,50 @@ export default function Home() {
             </button>
           </div>
         </div>
+        <SearchModal
+          open={isSpecialtySearchModalVisible}
+          title={"Select a specialty:"}
+          placeholder={"Search here.."}
+          options={specialtyOptions}
+          onSearchBoxChangeText={onSpecialtySearchBoxChangeText}
+          onOptionSelected={onSpecialtyOptionSelected}
+          onCancelButtonPress={() => setIsSpecialtySearchModalVisible(false)}
+          >
+        </SearchModal>
+        <SearchModal
+          open={isLocationSearchModalVisible}
+          title={"Select a location:"}
+          placeholder={"Search here.."}
+          options={locationOptions}
+          onSearchBoxChangeText={onLocationSearchBoxChangeText}
+          onOptionSelected={onLocationOptionSelected}
+          onCancelButtonPress={() => setIsLocationSearchModalVisible(false)}
+          >
+        </SearchModal>
         <style jsx>{`
           .form {
             background-color: ${Colors.LIGHT_BLUE};
           }
-          .form-select {
+
+          .form-input {
             background-color: ${Colors.HIGH_LIGHT};
             border: none;
             color: ${Colors.DARK_BLUE};
           }
+
           .form-button {
             background-color: ${Colors.DARK_BLUE};
+          }
+
+          ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+            color: ${Colors.DARK_BLUE};
+            opacity: 0.5;
+          }
+          :-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: ${Colors.DARK_BLUE};
+          } 
+          ::-ms-input-placeholder { /* Microsoft Edge */
+            color: ${Colors.DARK_BLUE};
           }
         `}</style>
       </div>
