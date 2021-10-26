@@ -42,16 +42,18 @@ export default function SearchModal(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="px-1 py-2 border-b border-gray-200">
-                    <input
-                      type="text"
-                      name="name"
-                      id="name"
-                      className="block w-full border-0 border-transparent focus:ring-0 sm:text-sm"
-                      placeholder={props.placeholder}
-                      onChange={(input) => props.onSearchBoxChangeText(input.target.value)}
-                    />
-                  </div>
+                  { props.onSearchBoxChangeText &&
+                    <div className="px-1 py-2 border-b border-gray-200">
+                      <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        className="block w-full border-0 border-transparent focus:ring-0 sm:text-sm"
+                        placeholder={props.placeholder}
+                        onChange={(input) => props.onSearchBoxChangeText(input.target.value)}
+                      />
+                    </div>
+                  }
                   <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
                     {props.options.map((option) => (
                       <li key={option.id} onClick={() => props.onOptionSelected(option)} className="border-b border-gray-200">

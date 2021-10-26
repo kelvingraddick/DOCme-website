@@ -8,14 +8,25 @@ import Colors from '../constants/colors';
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
 export default function Home() {
+  
   const [isSpecialtySearchModalVisible, setIsSpecialtySearchModalVisible] = useState(false);
   const [specialtyOptions, setSpecialtyOptions] = useState([]);
   const [selectedSpecialtyOption, setSelectedSpecialtyOption] = useState({});
+  
   const [isLocationSearchModalVisible, setIsLocationSearchModalVisible] = useState(false);
   const [locationOptions, setLocationOptions] = useState([]);
   const [selectedLocationOption, setSelectedLocationOption] = useState({});
+ 
   const {placePredictions, getPlacePredictions} = usePlacesService({ apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY });
   const [selectedDate, setSelectedDate] = useState(new Date());
+  
+  const [isInsuranceCarrierSearchModalVisible, setIsInsuranceCarrierSearchModalVisible] = useState(false);
+  const [insuranceCarrierOptions, setInsuranceCarrierOptions] = useState([]);
+  const [selectedInsuranceCarrierOption, setSelectedInsuranceCarrierOption] = useState({});
+
+  const [isInsurancePlanSearchModalVisible, setIsInsurancePlanSearchModalVisible] = useState(false);
+  const [insurancePlanOptions, setInsurancePlanOptions] = useState([]);
+  const [selectedInsurancePlanOption, setSelectedInsurancePlanOption] = useState({});
 
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
@@ -30,7 +41,7 @@ export default function Home() {
           }
         })
       }
-      return undefined;
+      return [];
     })
     .catch((error) => {
       console.error(error);
@@ -62,6 +73,62 @@ export default function Home() {
     setLocationOptions([]);
   }
 
+  const onInsuranceCarrierSearchBoxChangeText = async function(text) {
+    if (!text) return [];
+
+    var insuranceCarriers = await fetch('http://www.docmeapp.com/insurance/carriers/search/' + encodeURIComponent(text), { method: 'GET' })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          if (responseJson.isSuccess) {
+            return responseJson.insuranceCarriers;
+          }
+        })
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
+
+    setInsuranceCarrierOptions(insuranceCarriers);
+  }
+
+  const onInsuranceCarrierOptionSelected = async function(option) {
+    setSelectedInsuranceCarrierOption(option);
+    setIsInsuranceCarrierSearchModalVisible(false);
+    setInsuranceCarrierOptions([]);
+    setSelectedInsurancePlanOption({});
+    setIsInsurancePlanSearchModalVisible(false);
+    setInsurancePlanOptions([]);
+
+    var insurancePlans = await fetch('http://www.docmeapp.com/insurance/carrier/' + option.id + '/plans', { method: 'GET' })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          if (responseJson.isSuccess) {
+            return responseJson.insurancePlans;
+          }
+        })
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
+
+    setInsurancePlanOptions(insurancePlans);
+  }
+
+  const onInsurancePlanOptionSelected = function(option) {
+    setSelectedInsurancePlanOption(option);
+    setIsInsurancePlanSearchModalVisible(false);
+  }
+
   return (
     <Layout>
       <div className="px-4 pt-1 sm:px-0">
@@ -76,14 +143,14 @@ export default function Home() {
           <div className="py-6">
             <div>
               <label htmlFor="speciality" className="sr-only">
-                Speciality
+                Specialty
               </label>
               <input
                 type="text"
                 name="specialty"
                 id="specialty"
                 className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                placeholder="Select a speciality"
+                placeholder="Select a specialty"
                 readOnly
                 value={selectedSpecialtyOption.name}
                 onClick={() => setIsSpecialtySearchModalVisible(true)}
@@ -118,18 +185,37 @@ export default function Home() {
               />
             </div>
             <div>
-              <label htmlFor="location" className="sr-only">
-                Insurance carrier
+              <label htmlFor="insuranceCarrier" className="sr-only">
+                Insurance Carrier
               </label>
-              <select
-                id="insurance-carrier"
-                name="Insurance carrier"
+              <input
+                type="text"
+                name="insuranceCarrier"
+                id="insuranceCarrier"
                 className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                defaultValue="United Healthcare Dental"
-              >
-                <option>United Healthcare Dental</option>
-              </select>
+                placeholder="Select a insurance carrier"
+                readOnly
+                value={selectedInsuranceCarrierOption.name}
+                onClick={() => setIsInsuranceCarrierSearchModalVisible(true)}
+              />
             </div>
+            { selectedInsuranceCarrierOption.id &&
+              <div>
+                <label htmlFor="insurancePlan" className="sr-only">
+                  Insurance Plan
+                </label>
+                <input
+                  type="text"
+                  name="insurancePlan"
+                  id="insurancePlan"
+                  className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                  placeholder="Select a insurance plan"
+                  readOnly
+                  value={selectedInsurancePlanOption.name}
+                  onClick={() => setIsInsurancePlanSearchModalVisible(true)}
+                />
+              </div>
+            }
             <button
               type="submit"
               className="group relative w-full flex justify-center mt-2 py-4 px-4 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -159,6 +245,25 @@ export default function Home() {
           onSearchBoxChangeText={onLocationSearchBoxChangeText}
           onOptionSelected={onLocationOptionSelected}
           onCancelButtonPress={() => setIsLocationSearchModalVisible(false)}
+          >
+        </SearchModal>
+        <SearchModal
+          open={isInsuranceCarrierSearchModalVisible}
+          title={"Select an insurance carrier:"}
+          placeholder={"Search here.."}
+          options={insuranceCarrierOptions}
+          onSearchBoxChangeText={onInsuranceCarrierSearchBoxChangeText}
+          onOptionSelected={onInsuranceCarrierOptionSelected}
+          onCancelButtonPress={() => setIsInsuranceCarrierSearchModalVisible(false)}
+          >
+        </SearchModal>
+        <SearchModal
+          open={isInsurancePlanSearchModalVisible}
+          title={"Select an insurance plan:"}
+          placeholder={"Search here.."}
+          options={insurancePlanOptions}
+          onOptionSelected={onInsurancePlanOptionSelected}
+          onCancelButtonPress={() => setIsInsurancePlanSearchModalVisible(false)}
           >
         </SearchModal>
         <style jsx>{`
