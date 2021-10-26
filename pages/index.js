@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { SearchIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Colors from '../constants/colors';
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
@@ -13,6 +15,7 @@ export default function Home() {
   const [locationOptions, setLocationOptions] = useState([]);
   const [selectedLocationOption, setSelectedLocationOption] = useState({});
   const {placePredictions, getPlacePredictions} = usePlacesService({ apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY });
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
@@ -63,7 +66,7 @@ export default function Home() {
     <Layout>
       <div className="px-4 pt-1 sm:px-0">
         <div className="bg-local bg-center bg-cover rounded-lg mb-1 h-96" style={{ backgroundImage: "url('../images/background-1.jpg')" }}></div>
-        <div className="form rounded-lg p-6 h-auto">
+        <div className="rounded-lg p-6 h-auto bg-lightBlue">
           <div className="text-center text-2xl text-white font-semibold">
             Welcome to DOCme!
           </div>
@@ -79,7 +82,7 @@ export default function Home() {
                 type="text"
                 name="specialty"
                 id="specialty"
-                className="form-input mt-1 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Select a speciality"
                 readOnly
                 value={selectedSpecialtyOption.name}
@@ -94,11 +97,24 @@ export default function Home() {
                 type="text"
                 name="location"
                 id="location"
-                className="form-input mt-1 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Select a location"
                 readOnly
                 value={selectedLocationOption.name}
                 onClick={() => setIsLocationSearchModalVisible(true)}
+              />
+            </div>
+            <div>
+              <label htmlFor="datetime" className="sr-only">
+                Date and Time
+              </label>
+              <DatePicker
+                id="datetime"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                dateFormat="MMMM d, yyyy"
+                minDate={new Date()}
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
               />
             </div>
             <div>
@@ -108,7 +124,7 @@ export default function Home() {
               <select
                 id="insurance-carrier"
                 name="Insurance carrier"
-                className="form-input mt-2 block w-full pl-3 pr-10 py-4 text-white focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 defaultValue="United Healthcare Dental"
               >
                 <option>United Healthcare Dental</option>
@@ -116,7 +132,7 @@ export default function Home() {
             </div>
             <button
               type="submit"
-              className="form-button group relative w-full flex justify-center mt-2 py-4 px-4 border border-transparent text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center mt-2 py-4 px-4 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Find
               <span className="absolute right-2 inset-y-0 flex items-center pl-3">
@@ -146,20 +162,6 @@ export default function Home() {
           >
         </SearchModal>
         <style jsx>{`
-          .form {
-            background-color: ${Colors.LIGHT_BLUE};
-          }
-
-          .form-input {
-            background-color: ${Colors.HIGH_LIGHT};
-            border: none;
-            color: ${Colors.DARK_BLUE};
-          }
-
-          .form-button {
-            background-color: ${Colors.DARK_BLUE};
-          }
-
           ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
             color: ${Colors.DARK_BLUE};
             opacity: 0.5;
