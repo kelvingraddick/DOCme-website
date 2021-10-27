@@ -18,6 +18,9 @@ jobs:
     - name: Build and export project
       run: 
         npm run build
+    - name: Delete 404.html folder (causes error during FTP transfer)
+      run:
+       rm out/404.html/* && rmdir -p out/404.html
     - name: ftp-action
       uses: sebastianpopp/ftp-action@v2.0.0
       with:
