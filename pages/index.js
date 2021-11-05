@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SearchIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
+import DoctorRow from '../components/doctorRow';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Colors from '../constants/colors';
@@ -27,6 +28,8 @@ export default function Home() {
   const [isInsurancePlanSearchModalVisible, setIsInsurancePlanSearchModalVisible] = useState(false);
   const [insurancePlanOptions, setInsurancePlanOptions] = useState([]);
   const [selectedInsurancePlanOption, setSelectedInsurancePlanOption] = useState({});
+
+  const [doctors, setDoctors] = useState([]);
 
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
@@ -129,11 +132,34 @@ export default function Home() {
     setIsInsurancePlanSearchModalVisible(false);
   }
 
+  const onFindButtonClicked = async function() {
+    if (!selectedSpecialtyOption || !selectedLocationOption) return [];
+
+    var doctors = await fetch('http://www.docmeapp.com/doctor/search', { method: 'GET' })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          if (responseJson.isSuccess) {
+            return responseJson.doctors;
+          }
+        })
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
+
+    setDoctors(doctors);
+  }
+
   return (
     <Layout>
       <div className="px-4 pt-1 sm:px-0">
         <div className="bg-local bg-center bg-cover rounded-lg mb-1 h-96" style={{ backgroundImage: "url('../images/background-1.jpg')" }}></div>
-        <div className="rounded-lg p-6 h-auto bg-lightBlue">
+        <div className="rounded-lg p-6 h-auto bg-lightBlue mb-2">
           <div className="text-center text-2xl text-white font-semibold">
             Welcome to DOCme!
           </div>
@@ -218,7 +244,8 @@ export default function Home() {
             }
             <button
               type="submit"
-              className="group relative w-full flex justify-center mt-2 py-4 px-4 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center mt-2 py-4 px-4 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white hover:bg-mediumBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={onFindButtonClicked}
             >
               Find
               <span className="absolute right-2 inset-y-0 flex items-center pl-3">
@@ -226,6 +253,17 @@ export default function Home() {
               </span>
             </button>
           </div>
+        </div>
+        <div className="bg-white shadow overflow-hidden sm:rounded-md">
+          <ul role="list" className="divide-y divide-gray-200">
+            {doctors.map((doctor) => (
+              <li key={doctor.id}>
+                <a href={'/doctor/' + doctor.id} className="block hover:bg-gray-50">
+                  <DoctorRow doctor={doctor} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
         <SearchModal
           open={isSpecialtySearchModalVisible}
