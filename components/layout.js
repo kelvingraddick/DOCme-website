@@ -12,7 +12,7 @@ const user = {
 const navigation = [
   { name: 'Search', href: '/', current: true },
   { name: 'Appointments', href: '/appointments', current: false },
-  { name: 'My Account', href: '#', current: false }
+  { name: 'My Account', href: '/myaccount', current: false }
 ]
 const userNavigation = [
   { name: 'My Account', href: '#' },
