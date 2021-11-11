@@ -1,8 +1,7 @@
 const data = [
   {
       path: '/appointments',
-      path: '/myaccount',
-      path: '/doctor',
+      path: '/myaccount'
   }
 ];
 
