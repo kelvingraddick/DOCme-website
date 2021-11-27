@@ -65,7 +65,7 @@ export default function Doctor(props) {
       <div className="bg-white shadow sm:rounded-lg mt-4">
         <div className="grid justify-items-center px-4 py-5 sm:p-6">
           <div className="flex-shrink-0 mb-2">
-            <img className="h-20 w-20 rounded-full" src={props.doctor.imageUrl || '../images/placeholder-user.png'} alt="" />
+            <img className="h-20 w-20 rounded-full" src={props.doctor.imageUrl || '/images/placeholder-user.png'} alt="" />
           </div>
           <div className="min-w-0 flex-1 text-center">
               <p className="text-lg font-medium text-darkBlue truncate">{props.doctor.firstName + ' ' + props.doctor.lastName}</p>

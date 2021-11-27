@@ -7,7 +7,7 @@ import Colors from '../constants/colors';
 const user = {
   name: 'Tom Cook',
   email: 'tom@example.com',
-  imageUrl:'../images/placeholder-user.png',
+  imageUrl:'/images/placeholder-user.png',
 }
 const navigation = [
   { name: 'Search', href: '/', current: true },
@@ -41,7 +41,7 @@ export default function Layout({ children }) {
                     />
                     <img
                       className="hidden lg:block h-10 w-auto"
-                      src="../images/docme-logo-icon-and-text.png"
+                      src="/images/docme-logo-icon-and-text.png"
                       alt="DOCme"
                     />
                   </div>

@@ -6,7 +6,7 @@ export default function DoctorRow(props) {
     <div className="flex items-center px-4 py-4 sm:px-6">
       <div className="min-w-0 flex-1 flex items-center">
         <div className="flex-shrink-0">
-          <img className="h-20 w-20 rounded-full" src={props.doctor.imageUrl || '../images/placeholder-user.png'} alt="" />
+          <img className="h-20 w-20 rounded-full" src={props.doctor.imageUrl || '/images/placeholder-user.png'} alt="" />
         </div>
         <div className="min-w-0 flex-1 px-4">
             <p className="text-base font-medium text-darkBlue truncate">{props.doctor.firstName + ' ' + props.doctor.lastName}</p>
