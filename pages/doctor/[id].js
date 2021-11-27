@@ -51,7 +51,6 @@ export async function getStaticPaths() {
   const paths = doctors.map((doctor) => ({
     params: { id: doctor.id + '' },
   }));
-  console.info(paths);
 
   return { paths, fallback: false };
 }
