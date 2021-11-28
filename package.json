@@ -10,6 +10,7 @@
     "@heroicons/react": "^1.0.4",
     "@tailwindcss/forms": "^0.3.4",
     "google-map-react": "^2.1.10",
+    "moment": "^2.29.1",
     "next": "latest",
     "react": "^17.0.2",
     "react-datepicker": "^4.3.0",

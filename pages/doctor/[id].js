@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { LocationMarkerIcon, StarIcon } from '@heroicons/react/solid';
+import { LocationMarkerIcon, StarIcon, CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import Layout from '../../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
 import Geocode from "react-geocode";
 import GoogleMapReact from 'google-map-react';
+import Moment from 'moment';
 import Genders from '../../constants/genders';
 import Races from '../../constants/races';
 
@@ -87,6 +88,43 @@ export async function getStaticPaths() {
 export default function Doctor(props) {
 
   const [doctor, setDoctor] = useState(props.doctor);
+  const [date, setDate] = useState(Moment().startOf('date'));
+  const [times, setTimes] = useState([]);
+
+  const CHANGE_DATE_DIRECTION = { BACK: 0, FORWARD: 1 }
+
+  const changeTimes = function () {
+    var times = [];
+    var schedule = doctor.schedule;
+    if (schedule) {
+      var dayOfWeek = date.format('dddd').toLowerCase();
+      var availabilityStartTime = getTimeFromString(schedule[dayOfWeek + 'AvailabilityStartTime']);
+      var availabilityEndTime = getTimeFromString(schedule[dayOfWeek + 'AvailabilityEndTime']);
+      var breakStartTime = getTimeFromString(schedule[dayOfWeek + 'BreakStartTime']);
+      var breakEndTime = getTimeFromString(schedule[dayOfWeek + 'BreakEndTime']);
+      if (availabilityStartTime && availabilityEndTime) {
+        var time = Moment(availabilityStartTime);
+        while(time.isBefore(availabilityEndTime)) {
+          if (!breakStartTime || !breakEndTime || (!time.isSame(breakStartTime) && !time.isBetween(breakStartTime, breakEndTime))) { 
+            times.push(Moment(time)); 
+          }
+          time.add(30, 'minutes');
+        }
+      }
+    }
+    setTimes(times);
+  };
+
+  const getTimeFromString = function (string) {
+    return string ? 
+      Moment(date.format('YYYY-MM-DD') + ' ' + string, "YYYY-MM-DD HH:mm:ss") : null;
+  };
+
+  const changeDate = function (direction) {
+    if (direction == CHANGE_DATE_DIRECTION.FORWARD) setDate(date.add(1, 'days'));
+    else if (date.isSameOrAfter(Moment())) setDate(date.subtract(1, 'days'));
+    changeTimes();
+  };
 
   return (
     <Layout>
@@ -116,6 +154,35 @@ export default function Doctor(props) {
           <div className="min-w-0 flex-1 text-center">
               <p className="text-lg font-medium text-darkBlue">Book an appointment</p>
           </div>
+          <div className="min-w-full flex flex-row items-center text-center">
+            <ChevronLeftIcon className="arrow-button flex-none h-12 w-12 text-green" aria-hidden="true"
+              onClick={() => changeDate(CHANGE_DATE_DIRECTION.BACK)}
+            />
+            <div className="flex-grow">
+              <div className="flex flex-row text-darkGray justify-center">
+                <CalendarIcon className="h-5 w-5" aria-hidden="true" />&nbsp;
+                <span className="text-md font-medium text-darkGray">{date.format('ddd, MMM D')}</span>
+              </div>
+            </div>
+            <ChevronRightIcon className="arrow-button flex-none h-12 w-12 text-green" aria-hidden="true"
+              onClick={() => changeDate(CHANGE_DATE_DIRECTION.FORWARD)}
+            />
+          </div>
+          { times && times.length > 0 &&
+            <div className="max-w-full flex flex-row items-center overflow-x-scroll">
+              {times.map((time) => (
+                <button
+                  type="submit"
+                  className="group relative w-full flex justify-center mt-1 mb-3 mr-3 py-2 px-2 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white hover:bg-mediumBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  {time.format('h:mma')}
+                </button>
+              ))}
+            </div>
+          }
+          { !times || times.length == 0 &&
+            <div className="text-sm text-darkGray">No times available</div>
+          }
         </div>
       </div>
       { props.coordinates && props.doctor.practice &&
@@ -169,7 +236,9 @@ export default function Doctor(props) {
         </div>
       </div>
       <style jsx>{`
-          
+        .arrow-button {
+          cursor: pointer;
+        }
       `}</style>
     </Layout>
   )
