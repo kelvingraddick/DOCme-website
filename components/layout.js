@@ -36,7 +36,7 @@ export default function Layout({ children }) {
                   <div className="flex-shrink-0 flex items-center">
                     <img
                       className="block lg:hidden h-10 w-auto"
-                      src="../images/docme-logo-icon-and-text.png"
+                      src="/images/docme-logo-icon-and-text.png"
                       alt="DOCme"
                     />
                     <img
