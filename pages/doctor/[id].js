@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRightIcon, StarIcon } from '@heroicons/react/solid';
+import { LocationMarkerIcon, StarIcon } from '@heroicons/react/solid';
 import Layout from '../../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
+import Geocode from "react-geocode";
+import GoogleMapReact from 'google-map-react';
 import Genders from '../../constants/genders';
 import Races from '../../constants/races';
 
@@ -23,9 +25,36 @@ export async function getStaticProps(context) {
       return {};
     });
 
+  var coordinates = {
+    center: {
+      lat: 37.78825,
+      lng: -122.4324
+    },
+    zoom: 13
+  };
+  if (doctor.practice) {
+    Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_API_KEY);
+    if (process.env.NODE_ENV == 'development') Geocode.enableDebug();
+    coordinates = await Geocode.fromAddress(doctor.practice.addressLine1 + " " + doctor.practice.addressLine2 + " " + doctor.practice.city + ", " + doctor.practice.state + " " + doctor.practice.postalCode)
+      .then((response) => { 
+        return {
+          center: {
+            lat: response.results[0].geometry.location.lat,
+            lng: response.results[0].geometry.location.lng
+          },
+          zoom: 13
+        };
+      })
+      .catch((error) => {
+        console.error(error);
+        return {};
+      });
+  }
+
   return {
     props: {
-      doctor
+      doctor,
+      coordinates
     },
   }
 }
@@ -89,16 +118,33 @@ export default function Doctor(props) {
           </div>
         </div>
       </div>
-      <div className="bg-white shadow sm:rounded-lg mt-4">
-        <div className="grid justify-items-center px-4 py-5 sm:p-6">
-          <div className="min-w-0 flex-1 text-center">
-              <p className="text-lg font-medium text-darkBlue">Location</p>
-              { props.doctor.practice &&
-                <p className="mt-1 text-base font-thin text-darkGray">{props.doctor.practice.addressLine1} {props.doctor.practice.addressLine2} {props.doctor.practice.city}, {props.doctor.practice.state} {props.doctor.practice.postalCode}</p>
-              }
+      { props.coordinates && props.doctor.practice &&
+        <div className="bg-white shadow sm:rounded-lg mt-4">
+          <div className="grid justify-items-center px-4 py-5 sm:p-6">
+            <div className="min-w-full flex-1 text-center">
+                <p className="text-lg font-medium text-darkBlue">Location</p>
+                { props.coordinates &&
+                  <div className="mt-1" style={{ height: '200px', width: '100%' }}>
+                    <GoogleMapReact
+                      bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY }}
+                      defaultCenter={props.coordinates.center}
+                      defaultZoom={props.coordinates.zoom}
+                    >
+                      <LocationMarkerIcon className="h-12 w-12 relative bottom-12 text-red" aria-hidden="true"
+                        lat={props.coordinates.center.lat}
+                        lng={props.coordinates.center.lng}
+                        text="Marker"
+                      />
+                    </GoogleMapReact>
+                  </div>
+                }
+                { props.doctor.practice &&
+                  <p className="mt-1 text-base font-thin text-darkGray">{props.doctor.practice.addressLine1} {props.doctor.practice.addressLine2} {props.doctor.practice.city}, {props.doctor.practice.state} {props.doctor.practice.postalCode}</p>
+                }
+            </div>
           </div>
         </div>
-      </div>
+      }
       <div className="bg-white shadow sm:rounded-lg mt-4">
         <div className="grid justify-items-center px-4 py-5 sm:p-6">
           <div className="min-w-0 flex-1 text-center">
