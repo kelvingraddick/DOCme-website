@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { LocationMarkerIcon, StarIcon, CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import Layout from '../../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -86,6 +88,7 @@ export async function getStaticPaths() {
 }
 
 export default function Doctor(props) {
+  const router = useRouter();
 
   const [doctor, setDoctor] = useState(props.doctor);
   const [date, setDate] = useState(Moment().startOf('date'));
@@ -171,12 +174,16 @@ export default function Doctor(props) {
           { times && times.length > 0 &&
             <div className="max-w-full flex flex-row items-center overflow-x-scroll">
               {times.map((time) => (
-                <button
-                  type="submit"
-                  className="group relative w-full flex justify-center mt-1 mb-3 mr-3 py-2 px-2 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white hover:bg-mediumBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                <Link
+                  href={{
+                    pathname: "/bookappointment",
+                    query: { doctorId: props.doctor.id, date: date.toJSON(), time: time.toJSON() },
+                  }}
                 >
-                  {time.format('h:mma')}
-                </button>
+                  <button className="group relative w-full flex justify-center mt-1 mb-3 mr-3 py-2 px-2 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white hover:bg-mediumBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {time.format('h:mma')}
+                  </button>
+                </Link>
               ))}
             </div>
           }
