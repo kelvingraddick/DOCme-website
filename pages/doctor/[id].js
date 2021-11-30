@@ -229,6 +229,20 @@ export default function Doctor(props) {
           </div>
         </div>
       </div>
+      { props.doctor.images && props.doctor.images.length > 0 &&
+        <div className="bg-white shadow sm:rounded-lg mt-4">
+          <div className="grid justify-items-center px-4 py-5 sm:p-6">
+            <div className="min-w-0 flex-1 text-center">
+              <p className="text-lg font-medium text-darkBlue">Images</p>
+            </div>
+            <div className="mt-4 max-w-full flex flex-row space-x-4 overflow-x-scroll">
+              {props.doctor.images.map((image) => (
+                <img src={image.url} alt="" className="h-52 w-52 object-cover pointer-events-none group-hover:opacity-75" />
+              ))}
+            </div>
+          </div>
+        </div>
+      }
       <div className="bg-white shadow sm:rounded-lg mt-4">
         <div className="grid justify-items-center px-4 py-5 sm:p-6">
           <div className="min-w-0 flex-1 text-center">
