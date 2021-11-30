@@ -177,7 +177,7 @@ export default function Layout({ children }) {
 
       <div>
         <main>
-          <div className="min-h-screen max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="min-h-screen max-w-7xl mx-auto sm:px-6 lg:px-8 pb-4">
             {children}
           </div>
         </main>
