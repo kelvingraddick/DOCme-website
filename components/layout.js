@@ -1,4 +1,6 @@
-import Head from 'next/head'
+import { useEffect, useContext } from 'react';
+import Login from '../helpers/login';
+import { UserContext } from '../context/userContext';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
@@ -25,6 +27,25 @@ function classNames(...classes) {
 }
 
 export default function Layout({ children }) {
+
+  const userContext = useContext(UserContext);
+
+  useEffect(async () => {
+    var token = localStorage.getItem('TOKEN');
+    if (token) { 
+      userContext.setToken(token);
+      var response = await Login.withToken('patient', token);
+      if (response?.patient) {
+        userContext.setPatient(response.patient || null);
+      } else {
+        var response = await Login.withToken('doctor', token);
+        if (response?.doctor) {
+          userContext.setDoctor(response.doctor || null);
+        }
+      }
+    }
+}, []);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Disclosure as="nav" className="bg-white shadow-sm">
