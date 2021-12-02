@@ -100,7 +100,7 @@ export default function SignIn() {
               onClick={onSignInButtonClicked}
               disabled={isLoading}
             >
-              Book
+              Sign in
             </button>
             { errorMessage &&
               <div className="mt-2 flex flex-row text-sm text-white">
