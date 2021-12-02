@@ -69,8 +69,8 @@ export default function SignIn() {
               />
             </div>
             <div>
-              <label htmlFor="notes" className="sr-only">
-                Notes
+              <label htmlFor="emailAddress" className="sr-only">
+                Email Address
               </label>
               <input
                 type="email"
@@ -82,8 +82,8 @@ export default function SignIn() {
               />
             </div>
             <div>
-              <label htmlFor="notes" className="sr-only">
-                Notes
+              <label htmlFor="password" className="sr-only">
+                Password
               </label>
               <input
                 type="password"
