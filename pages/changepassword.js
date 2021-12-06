@@ -106,7 +106,7 @@ export default function ChangePassword() {
                 type="password"
                 name="currentPassword"
                 id="currentPassword"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Current password"
                 onChange={(input) => setCurrentPassword(input.target.value)}
               />
@@ -119,7 +119,7 @@ export default function ChangePassword() {
                 type="password"
                 name="newPassword"
                 id="newPassword"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="New password"
                 onChange={(input) => setNewPassword(input.target.value)}
               />
@@ -132,7 +132,7 @@ export default function ChangePassword() {
                 type="password"
                 name="newPasswordConfirm"
                 id="newPasswordConfirm"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Confirm new password"
                 onChange={(input) => setNewPasswordConfirm(input.target.value)}
               />

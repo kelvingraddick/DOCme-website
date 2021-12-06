@@ -61,7 +61,7 @@ export default function SignIn() {
                 type="text"
                 name="userType"
                 id="userType"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Patient or doctor?"
                 readOnly
                 value={selectedUserTypeOption.name}
@@ -76,7 +76,7 @@ export default function SignIn() {
                 type="email"
                 name="emailAddress"
                 id="emailAddress"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Email Address"
                 onChange={(input) => setEmailAddress(input.target.value)}
               />
@@ -89,7 +89,7 @@ export default function SignIn() {
                 type="password"
                 name="password"
                 id="password"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Password"
                 onChange={(input) => setPassword(input.target.value)}
               />

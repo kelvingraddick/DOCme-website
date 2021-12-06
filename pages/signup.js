@@ -147,7 +147,7 @@ export default function SignUp() {
                 type="text"
                 name="userType"
                 id="userType"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Patient or doctor?"
                 readOnly
                 value={selectedUserTypeOption.name}
@@ -162,7 +162,7 @@ export default function SignUp() {
                 type="text"
                 name="firstName"
                 id="firstName"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="First name"
                 onChange={(input) => setFirstName(input.target.value)}
               />
@@ -175,7 +175,7 @@ export default function SignUp() {
                 type="text"
                 name="lastName"
                 id="lastName"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Last name"
                 onChange={(input) => setLastName(input.target.value)}
               />
@@ -188,7 +188,7 @@ export default function SignUp() {
                 type="email"
                 name="emailAddress"
                 id="emailAddress"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Email Address"
                 onChange={(input) => setEmailAddress(input.target.value)}
               />
@@ -201,7 +201,7 @@ export default function SignUp() {
                 type="password"
                 name="password"
                 id="password"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Password"
                 onChange={(input) => setPassword(input.target.value)}
               />
@@ -214,7 +214,7 @@ export default function SignUp() {
                 type="password"
                 name="passwordConfirm"
                 id="passwordConfirm"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Confirm password"
                 onChange={(input) => setPasswordConfirm(input.target.value)}
               />
@@ -227,7 +227,7 @@ export default function SignUp() {
                 type="text"
                 name="gender"
                 id="gender"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Gender"
                 readOnly
                 value={selectedGenderOption.name}
@@ -242,7 +242,7 @@ export default function SignUp() {
                 type="text"
                 name="race"
                 id="race"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Race"
                 readOnly
                 value={selectedRaceOption.name}

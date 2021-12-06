@@ -175,7 +175,7 @@ export default function Home() {
                 type="text"
                 name="specialty"
                 id="specialty"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Select a specialty"
                 readOnly
                 value={selectedSpecialtyOption.name}
@@ -190,7 +190,7 @@ export default function Home() {
                 type="text"
                 name="location"
                 id="location"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Select a location"
                 readOnly
                 value={selectedLocationOption.name}
@@ -203,7 +203,7 @@ export default function Home() {
               </label>
               <DatePicker
                 id="datetime"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 dateFormat="MMMM d, yyyy"
                 minDate={new Date()}
                 selected={selectedDate}
@@ -218,7 +218,7 @@ export default function Home() {
                 type="text"
                 name="insuranceCarrier"
                 id="insuranceCarrier"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Select a insurance carrier"
                 readOnly
                 value={selectedInsuranceCarrierOption.name}
@@ -234,7 +234,7 @@ export default function Home() {
                   type="text"
                   name="insurancePlan"
                   id="insurancePlan"
-                  className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                  className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                   placeholder="Select a insurance plan"
                   readOnly
                   value={selectedInsurancePlanOption.name}

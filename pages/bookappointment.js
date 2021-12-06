@@ -174,7 +174,7 @@ export default function BookAppointment(props) {
                 type="text"
                 name="specialty"
                 id="specialty"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Select a specialty"
                 readOnly
                 value={selectedSpecialtyOption.name}
@@ -192,7 +192,7 @@ export default function BookAppointment(props) {
                 type="text"
                 name="notes"
                 id="notes"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Reason for visit / notes"
                 onChange={(input) => setNotes(input.target.value)}
               />

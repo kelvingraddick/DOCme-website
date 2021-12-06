@@ -176,7 +176,7 @@ export default function EditPractice() {
                 type="text"
                 name="name"
                 id="name"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Name"
                 value={name}
                 onChange={(input) => setName(input.target.value)}
@@ -190,7 +190,7 @@ export default function EditPractice() {
                 type="text"
                 name="description"
                 id="description"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Description"
                 value={description}
                 onChange={(input) => setDescription(input.target.value)}
@@ -204,7 +204,7 @@ export default function EditPractice() {
                 type="url"
                 name="website"
                 id="website"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Website"
                 value={website}
                 onChange={(input) => setWebsite(input.target.value)}
@@ -218,7 +218,7 @@ export default function EditPractice() {
                 type="email"
                 name="emailAddress"
                 id="emailAddress"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Email address"
                 value={emailAddress}
                 onChange={(input) => setEmailAddress(input.target.value)}
@@ -232,7 +232,7 @@ export default function EditPractice() {
                 type="tel"
                 name="phoneNumber"
                 id="phoneNumber"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Phone number"
                 value={phoneNumber}
                 onChange={(input) => setPhoneNumber(input.target.value)}
@@ -246,7 +246,7 @@ export default function EditPractice() {
                 type="tel"
                 name="faxNumber"
                 id="faxNumber"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Fax number"
                 value={faxNumber}
                 onChange={(input) => setFaxNumber(input.target.value)}
@@ -260,7 +260,7 @@ export default function EditPractice() {
                 type="text"
                 name="addressLine1"
                 id="addressLine1"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Address line 1"
                 value={addressLine1}
                 onChange={(input) => setAddressLine1(input.target.value)}
@@ -274,7 +274,7 @@ export default function EditPractice() {
                 type="text"
                 name="addressLine2"
                 id="addressLine2"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Address line 2"
                 value={addressLine2}
                 onChange={(input) => setAddressLine2(input.target.value)}
@@ -288,7 +288,7 @@ export default function EditPractice() {
                 type="text"
                 name="city"
                 id="city"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="City"
                 readOnly
                 value={selectedCityOption.name}
@@ -303,7 +303,7 @@ export default function EditPractice() {
                 type="text"
                 name="state"
                 id="state"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="State"
                 readOnly
                 value={selectedStateOption.name}
@@ -318,7 +318,7 @@ export default function EditPractice() {
                 type="text"
                 name="postalCode"
                 id="postalCode"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Postal code"
                 value={postalCode}
                 onChange={(input) => setPostalCode(input.target.value)}
@@ -332,7 +332,7 @@ export default function EditPractice() {
                 type="text"
                 name="countryCode"
                 id="countryCode"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
+                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
                 placeholder="Country"
                 readOnly
                 value={selectedCountryCodeOption.name}
