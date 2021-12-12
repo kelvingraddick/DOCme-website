@@ -4,11 +4,13 @@ import { UserContext } from '../context/userContext';
 import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, LockClosedIcon, ExclamationIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function MyAccount(props) {
 
   const router = useRouter();
   const userContext = useContext(UserContext);
+  var stripe = null;
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorAction, setErrorAction] = useState(null);
@@ -28,6 +30,7 @@ export default function MyAccount(props) {
   };
 
   useEffect(async () => {
+    stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
     checkForErrorMessage();
   }, [userContext]);
 
@@ -49,7 +52,23 @@ export default function MyAccount(props) {
   const checkForErrorMessage = function () {
     if (userContext.doctor != null && !['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) {
       setErrorMessage('Doctor subscription inactive. Tap to add payment!');
-      setErrorAction(() => () => router.push('/checkout'));
+
+      var errorAction = () => {
+        stripe.redirectToCheckout({
+          items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
+          successUrl: window.location.href,
+          cancelUrl: window.location.href,
+          clientReferenceId: String(userContext.doctor.id),
+          customerEmail: userContext.doctor.emailAddress
+        })
+        .then(function (result) {
+          if (result.error) {
+            
+          }
+        });
+      };
+
+      setErrorAction(() => errorAction);
     } else {
       setErrorMessage(null);
       setErrorAction(null);

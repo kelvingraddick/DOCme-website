@@ -8,6 +8,8 @@
   "dependencies": {
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.4",
+    "@stripe/react-stripe-js": "^1.6.0",
+    "@stripe/stripe-js": "^1.21.2",
     "@tailwindcss/forms": "^0.3.4",
     "google-map-react": "^2.1.10",
     "moment": "^2.29.1",
