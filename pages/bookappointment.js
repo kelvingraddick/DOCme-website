@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
+import { UserContext } from '../context/userContext';
 import { CheckIcon, ExclamationIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
@@ -36,7 +37,8 @@ export async function getServerSideProps(context) {
 
 export default function BookAppointment(props) {
   const router = useRouter();
-  const doctorId = router.query.doctorId;
+  const userContext = useContext(UserContext);
+  const doctorId = router.query.doctorId && Number(router.query.doctorId);
   const date = Moment(router.query.date);
   const time = Moment(router.query.time);
 
@@ -47,7 +49,7 @@ export default function BookAppointment(props) {
   const [specialtyOptions, setSpecialtyOptions] = useState([]);
   const [selectedSpecialtyOption, setSelectedSpecialtyOption] = useState({});
 
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState(null);
 
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
 
@@ -108,9 +110,8 @@ export default function BookAppointment(props) {
     var errorMessage = null;
     if (!selectedSpecialtyOption.id) {
       errorMessage = 'Must select a speciality.';
-    }
-    if (!props.patient || !props.token) {
-      errorMessage = 'Must sign in or sign up to book.';
+    } else if (!userContext.patient || !userContext.token) {
+      errorMessage = 'Must sign in or sign up as a patient to book.';
     }
     setErrorMessage(errorMessage);
     return errorMessage ? false : true;
@@ -118,8 +119,8 @@ export default function BookAppointment(props) {
 
   const book = async function () {
     var body = {
-      patientId: props.patient.id,
-      doctorId: props.doctor.id,
+      patientId: userContext.patient.id,
+      doctorId: doctorId,
       specialtyId: selectedSpecialtyOption.id,
       timestamp: time.toJSON(),
       isNewPatient: true,
@@ -129,7 +130,7 @@ export default function BookAppointment(props) {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + props.token
+        'Authorization': 'Bearer ' + userContext.token
       },
       body: JSON.stringify(body)
     })
