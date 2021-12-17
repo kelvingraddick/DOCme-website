@@ -70,7 +70,7 @@ export default function Appointments() {
                 <button
                   type="submit"
                   className="form-button group relative w-full flex justify-center mt-4 py-4 px-4 border border-transparent text-md font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  onClick={() => router.push('/myaccount')}
+                  onClick={() => router.push('/myaccount/')}
                 >
                   Sign In or Sign Up
                   <span className="absolute right-2 inset-y-0 flex items-center pl-3">

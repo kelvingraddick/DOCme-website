@@ -992,7 +992,7 @@ export default function EditSchedule() {
           cancelButtonColor={'white'}
           onCancelButtonPress={() => {
             setIsConfirmationModalVisible(false);
-            router.push('/myaccount');
+            router.push('/myaccount/');
           }}
           //confirmButtonText={'Confirm'}
           //confirmButtonColor={'red'}

@@ -35,7 +35,7 @@ export default function SignIn() {
       userContext.setDoctor(response.doctor || null);
       localStorage.setItem('TOKEN', response.token);
       setIsLoading(false);
-      router.push('/myaccount');
+      router.push('/myaccount/');
     } else {
       setErrorMessage('There was an error signing in; please update credentials and try again');
       setIsLoading(false);

@@ -242,7 +242,7 @@ export default function EditAccount() {
           cancelButtonColor={'white'}
           onCancelButtonPress={() => {
             setIsConfirmationModalVisible(false);
-            router.push('/myaccount');
+            router.push('/myaccount/');
           }}
           //confirmButtonText={'Confirm'}
           //confirmButtonColor={'red'}

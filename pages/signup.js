@@ -65,7 +65,7 @@ export default function SignUp() {
         if (response.doctor) {
           router.push('/checkout');
         } else {
-          router.push('/myaccount');
+          router.push('/myaccount/');
         }
       } else {
         setErrorMessage(response.errorMessage);

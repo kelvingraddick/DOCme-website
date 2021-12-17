@@ -13,11 +13,11 @@ const user = {
 }
 const navigation = [
   { name: 'Search', href: '/', current: true },
-  { name: 'Appointments', href: '/appointments', current: false },
-  { name: 'My Account', href: '/myaccount', current: false }
+  { name: 'Appointments', href: '/appointments/', current: false },
+  { name: 'My Account', href: '/myaccount/', current: false }
 ]
 const userNavigation = [
-  { name: 'My Account', href: '/myaccount' }
+  { name: 'My Account', href: '/myaccount/' }
 ]
 
 function classNames(...classes) {
