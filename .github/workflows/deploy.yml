@@ -20,6 +20,13 @@ jobs:
       with:
         envkey_NEXT_PUBLIC_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         file_name: .env.local
+    - name: Read environment file
+      id: env-file
+      uses: juliangruber/read-file-action@v1.1.4
+      with:
+        path: .env.local
+    - name: Log environment file
+      run: echo "${{ steps.env-file.outputs.content }}"
     - name: Build and export project
       run: 
         npm run build
