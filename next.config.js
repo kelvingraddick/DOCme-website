@@ -4,7 +4,7 @@ module.exports = {
     const paths = {
       '/': { page: '/' },
       '/appointments': { page: '/appointments' },
-      '/myaccount': { page: '/appointments' }
+      '/myaccount': { page: '/myaccount' }
     };
 
     return paths;
