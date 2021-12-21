@@ -15,6 +15,11 @@ jobs:
     - name: Install project
       run: 
         npm install
+    - name: Create environment file
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        envkey_NEXT_PUBLIC_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        file_name: .env.local
     - name: Build and export project
       run: 
         npm run build
