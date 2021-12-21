@@ -6,6 +6,12 @@ import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
 import { loadStripe } from "@stripe/stripe-js";
 
+export async function getStaticProps(context) {
+  return {
+    props: {}
+  }
+}
+
 export default function MyAccount(props) {
 
   const router = useRouter();

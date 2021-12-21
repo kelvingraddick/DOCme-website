@@ -6,7 +6,13 @@ import Moment from 'moment';
 import Layout from '../components/layout';
 import Colors from '../constants/colors';
 
-export default function Appointments() {
+export async function getStaticProps(context) {
+  return {
+    props: {}
+  }
+}
+
+export default function Appointments(props) {
 
   const router = useRouter();
   const userContext = useContext(UserContext);
