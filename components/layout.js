@@ -1,24 +1,11 @@
 import { useEffect, useContext } from 'react';
+import { useRouter } from 'next/router';
 import Login from '../helpers/login';
 import { UserContext } from '../context/userContext';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import Colors from '../constants/colors';
-
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:'/images/placeholder-user.png',
-}
-const navigation = [
-  { name: 'Search', href: '/', current: true },
-  { name: 'Appointments', href: '/appointments/', current: false },
-  { name: 'My Account', href: '/myaccount/', current: false }
-]
-const userNavigation = [
-  { name: 'My Account', href: '/myaccount/' }
-]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -27,6 +14,17 @@ function classNames(...classes) {
 export default function Layout({ children }) {
 
   const userContext = useContext(UserContext);
+
+  const router = useRouter();
+
+  const navigation = [
+    { name: 'Search', href: '/', current: router.pathname == '/' },
+    { name: 'Appointments', href: '/appointments/', current: router.pathname == '/appointments' },
+    { name: 'My Account', href: '/myaccount/', current: router.pathname == '/myaccount' },
+  ]
+  const userNavigation = [
+    { name: 'My Account', href: '/myaccount/' }
+  ]
 
   useEffect(async () => {
     var token = localStorage.getItem('TOKEN');
