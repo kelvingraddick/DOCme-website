@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
-import { CheckIcon, ExclamationIcon } from '@heroicons/react/solid'
+import { CheckIcon, ExclamationIcon } from '@heroicons/react/solid';
 import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
 import ConfirmationModal from '../components/confirmationModal';
@@ -10,37 +10,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Moment from 'moment';
 import Colors from '../constants/colors';
 
-export async function getServerSideProps(context) {
-  var doctor = await fetch('http://www.docmeapp.com/doctor/' + context.query.doctorId, { method: 'GET' })
-    .then((response) => { 
-      if (response.status == 200) {
-        return response.json()
-        .then((responseJson) => {
-          if (responseJson.isSuccess) {
-            return responseJson.doctor;
-          }
-        })
-      }
-      return {};
-    })
-    .catch((error) => {
-      console.error(error);
-      return {};
-    });
-
-  return {
-    props: {
-      doctor
-    },
-  }
-}
-
 export default function BookAppointment(props) {
   const router = useRouter();
   const userContext = useContext(UserContext);
   const doctorId = router.query.doctorId && Number(router.query.doctorId);
   const date = Moment(router.query.date);
   const time = Moment(router.query.time);
+
+  const [doctor, setDoctor] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -52,6 +29,27 @@ export default function BookAppointment(props) {
   const [notes, setNotes] = useState(null);
 
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+
+  useEffect(async () => {
+    if(!router.isReady) return;
+    var doctor = await fetch('http://www.docmeapp.com/doctor/' + doctorId, { method: 'GET' })
+      .then((response) => { 
+        if (response.status == 200) {
+          return response.json()
+          .then((responseJson) => {
+            if (responseJson.isSuccess) {
+              return responseJson.doctor;
+            }
+          })
+        }
+        return {};
+      })
+      .catch((error) => {
+        console.error(error);
+        setDoctor(null);
+      });
+    setDoctor(doctor);
+  }, [router.isReady]);
 
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
@@ -153,9 +151,11 @@ export default function BookAppointment(props) {
   return (
     <Layout>
       <div className="px-4 pt-1 sm:px-0">
-        <div className="bg-white shadow sm:rounded-lg mt-4">
-          <DoctorRow doctor={props.doctor} />
-        </div>
+        { doctor &&
+          <div className="bg-white shadow sm:rounded-lg mt-4">
+            <DoctorRow doctor={doctor} />
+          </div>
+        }
         <div className="rounded-lg p-6 h-auto bg-lightBlue mt-4 mb-2">
           <div className="text-lg text-white">
             Date and time
