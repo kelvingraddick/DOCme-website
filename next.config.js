@@ -4,7 +4,14 @@ module.exports = {
     const paths = {
       '/': { page: '/' },
       '/appointments': { page: '/appointments' },
-      '/myaccount': { page: '/myaccount' }
+      '/myaccount': { page: '/myaccount' },
+      '/bookappointment': { page: '/bookappointment' },
+      '/changepassword': { page: '/changepassword' },
+      '/editaccount': { page: '/editaccount' },
+      '/editpractice': { page: '/editpractice' },
+      '/editschedule': { page: '/editschedule' },
+      '/signin': { page: '/signin' },
+      '/signup': { page: '/signup' }
     };
 
     return paths;
