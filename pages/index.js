@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SearchIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
 import DoctorRow from '../components/doctorRow';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import Colors from '../constants/colors';
-import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
 export default function Home() {
   
@@ -14,12 +11,7 @@ export default function Home() {
   const [specialtyOptions, setSpecialtyOptions] = useState([]);
   const [selectedSpecialtyOption, setSelectedSpecialtyOption] = useState({});
   
-  const [isLocationSearchModalVisible, setIsLocationSearchModalVisible] = useState(false);
-  const [locationOptions, setLocationOptions] = useState([]);
-  const [selectedLocationOption, setSelectedLocationOption] = useState({});
- 
-  const {placePredictions, getPlacePredictions} = usePlacesService({ apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY });
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [postalCode, setPostalCode] = useState(null);
   
   const [isInsuranceCarrierSearchModalVisible, setIsInsuranceCarrierSearchModalVisible] = useState(false);
   const [insuranceCarrierOptions, setInsuranceCarrierOptions] = useState([]);
@@ -58,22 +50,6 @@ export default function Home() {
     setSelectedSpecialtyOption(option);
     setIsSpecialtySearchModalVisible(false);
     setSpecialtyOptions([]);
-  }
-
-  const onLocationSearchBoxChangeText = async function(text) {
-    if (!text) return [];
-    getPlacePredictions({ input: text });
-  }
-
-  useEffect(() => {
-    if (placePredictions.length) 
-      setLocationOptions(placePredictions.map((placePrediction) => ({ id: placePrediction.place_id, name: placePrediction.description })));
-  }, [placePredictions]);
-
-  const onLocationOptionSelected = function(option) {
-    setSelectedLocationOption(option);
-    setIsLocationSearchModalVisible(false);
-    setLocationOptions([]);
   }
 
   const onInsuranceCarrierSearchBoxChangeText = async function(text) {
@@ -133,9 +109,12 @@ export default function Home() {
   }
 
   const onFindButtonClicked = async function() {
-    if (!selectedSpecialtyOption || !selectedLocationOption) return [];
+    var parameters = [];
+    if (selectedSpecialtyOption.id) { parameters.push({ key: 'specialtyId', value: selectedSpecialtyOption.id }) }
+    if (postalCode) { parameters.push({ key: 'postalCode', value: postalCode }) }
+    if (selectedInsurancePlanOption.id) { parameters.push({ key: 'insurancePlanId', value: selectedInsurancePlanOption.id }) }
 
-    var doctors = await fetch('http://www.docmeapp.com/doctor/search', { method: 'GET' })
+    var doctors = await fetch('http://www.docmeapp.com/doctor/search' + (parameters.length > 0 ? '?' + parameters.map((parameter) => { return parameter.key + '=' + parameter.value }).join('&') : ''), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -188,26 +167,12 @@ export default function Home() {
               </label>
               <input
                 type="text"
-                name="location"
-                id="location"
+                name="postalCode"
+                id="postalCode"
                 className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                placeholder="Select a location"
-                readOnly
-                value={selectedLocationOption.name}
-                onClick={() => setIsLocationSearchModalVisible(true)}
-              />
-            </div>
-            <div>
-              <label htmlFor="datetime" className="sr-only">
-                Date and Time
-              </label>
-              <DatePicker
-                id="datetime"
-                className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                dateFormat="MMMM d, yyyy"
-                minDate={new Date()}
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
+                placeholder="Enter postal code"
+                value={postalCode}
+                onChange={(input) => setPostalCode(input.target.value)}
               />
             </div>
             <div>
@@ -273,16 +238,6 @@ export default function Home() {
           onSearchBoxChangeText={onSpecialtySearchBoxChangeText}
           onOptionSelected={onSpecialtyOptionSelected}
           onCancelButtonPress={() => setIsSpecialtySearchModalVisible(false)}
-          >
-        </SearchModal>
-        <SearchModal
-          open={isLocationSearchModalVisible}
-          title={"Select a location:"}
-          placeholder={"Search here.."}
-          options={locationOptions}
-          onSearchBoxChangeText={onLocationSearchBoxChangeText}
-          onOptionSelected={onLocationOptionSelected}
-          onCancelButtonPress={() => setIsLocationSearchModalVisible(false)}
           >
         </SearchModal>
         <SearchModal
