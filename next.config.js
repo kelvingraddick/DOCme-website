@@ -11,7 +11,9 @@ module.exports = {
       '/editpractice': { page: '/editpractice' },
       '/editschedule': { page: '/editschedule' },
       '/signin': { page: '/signin' },
-      '/signup': { page: '/signup' }
+      '/signup': { page: '/signup' },
+      '/termsofuse': { page: '/termsofuse' },
+      '/privacypolicy': { page: '/privacypolicy' }
     };
 
     return paths;
