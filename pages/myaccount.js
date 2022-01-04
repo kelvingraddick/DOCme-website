@@ -28,8 +28,8 @@ export default function MyAccount(props) {
     'Change Password': { icon: <LockClosedIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in', action: () => { router.push('/changepassword'); } },
     'Edit Practice': { icon: <OfficeBuildingIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in-doctor', action: () => { router.push('/editpractice'); } },
     'Edit Schedule': { icon: <CalendarIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in-doctor', action: () => { router.push('/editschedule'); } },
-    'Terms of use': { icon: <InformationCircleIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => {  } },
-    'Privacy Policy': { icon: <EyeOffIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => {  } },
+    'Terms of use': { icon: <InformationCircleIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => { router.push('/termsofuse'); } },
+    'Privacy Policy': { icon: <EyeOffIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => { router.push('/privacypolicy'); } },
     'Give app feedback': { icon: <BadgeCheckIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => {  } },
     'Share this app': { icon: <ShareIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => {  } },
     'Log out': { icon: <LogoutIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in', action: () => { signOut(); } }
