@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
-import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, LockClosedIcon, ExclamationIcon } from '@heroicons/react/solid'
+import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, LockClosedIcon, ExclamationIcon, CheckIcon } from '@heroicons/react/solid'
 import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
 import { loadStripe } from "@stripe/stripe-js";
@@ -108,6 +108,11 @@ export default function MyAccount(props) {
       { errorMessage &&
         <div className="mt-4 p-4 shadow sm:rounded-lg bg-red flex flex-row text-sm font-light text-white" onClick={errorAction}>
           <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />&nbsp;&nbsp;{errorMessage}
+        </div>
+      }
+      { (userContext.doctor != null && ['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) &&
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-green flex flex-row text-sm font-light text-white" onClick={errorAction}>
+          <CheckIcon className="h-5 w-5 text-red-600" aria-hidden="true" />&nbsp;&nbsp;Doctor subscription is&nbsp;<span className="font-bold">{userContext.doctor.stripeSubscriptionStatus}</span>
         </div>
       }
       <div className="px-4 pt-4 sm:px-0">
