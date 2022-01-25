@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
-import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, LockClosedIcon, ExclamationIcon, CheckIcon } from '@heroicons/react/solid'
+import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, LockClosedIcon, ExclamationIcon, CheckIcon, CheckCircleIcon } from '@heroicons/react/solid';
+import ConfirmationModal from '../components/confirmationModal';
 import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
 import { loadStripe } from "@stripe/stripe-js";
@@ -20,6 +21,9 @@ export default function MyAccount(props) {
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorAction, setErrorAction] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
 
   const options = {
     'Sign in': { icon: <LoginIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'logged-out', action: () => { router.push('/signin'); } },
@@ -81,6 +85,30 @@ export default function MyAccount(props) {
     }
   }
 
+  const cancelSubscription = function () {
+    return fetch('http://www.docmeapp.com/doctor/' + userContext.doctor.id + '/cancel/subscription', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + userContext.token
+      }
+    })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          return responseJson;
+        })
+      } else {
+        return undefined;
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return undefined;
+    });
+  }
+
   return (
     <Layout>
       { userContext.patient &&
@@ -105,14 +133,22 @@ export default function MyAccount(props) {
           </div>
         </div>
       }
-      { errorMessage &&
+      { !isLoading && errorMessage &&
         <div className="mt-4 p-4 shadow sm:rounded-lg bg-red flex flex-row text-sm font-light text-white" onClick={errorAction}>
           <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />&nbsp;&nbsp;{errorMessage}
         </div>
       }
-      { (userContext.doctor != null && ['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) &&
-        <div className="mt-4 p-4 shadow sm:rounded-lg bg-green flex flex-row text-sm font-light text-white" onClick={errorAction}>
-          <CheckIcon className="h-5 w-5 text-red-600" aria-hidden="true" />&nbsp;&nbsp;Doctor subscription is&nbsp;<span className="font-bold">{userContext.doctor.stripeSubscriptionStatus}</span>
+      { !isLoading && (userContext.doctor != null && ['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) &&
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-green flex flex-row text-sm font-light text-white" onClick={() => setIsConfirmationModalVisible(true)}>
+          Doctor subscription is&nbsp;<span className="font-bold">{userContext.doctor.stripeSubscriptionStatus}</span>&nbsp;<CheckCircleIcon className="h-5 w-5 text-red-600" aria-hidden="true" />&nbsp;-&nbsp;
+          <span style={{ textDecorationLine: "underline", fontStyle: "italic" }}>Cancel?</span>
+        </div>
+      }
+      { isLoading &&
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-green flex flex-row text-sm font-light font-italic text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
         </div>
       }
       <div className="px-4 pt-4 sm:px-0">
@@ -134,6 +170,49 @@ export default function MyAccount(props) {
             ))}
           </ul>
         </div>
+        <ConfirmationModal
+          open={isConfirmationModalVisible}
+          title={'Cancel doctor subscription?'}
+          description={'Your account won\'t show up for potential patients in this app anymore. Are you sure?'}
+          icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
+          cancelButtonText={'No'}
+          cancelButtonColor={'white'}
+          onCancelButtonPress={() => {
+            setIsConfirmationModalVisible(false);
+          }}
+          confirmButtonText={'Yes'}
+          confirmButtonColor={'red'}
+          onConfirmButtonPress={async () => {
+            setIsConfirmationModalVisible(false);
+            setIsLoading(true);
+            var response = await cancelSubscription();
+            if (response) {
+              if (response.isSuccess) {
+                userContext.setDoctor(response.doctor || null);
+                setIsSuccessModalVisible(true);
+              } else {
+                setErrorMessage(response.errorMessage);
+              }
+              setIsLoading(false);
+            } else {
+              setErrorMessage('There was an error cancelling. Please try again.');
+              setIsLoading(false);
+            }
+          }}
+          >
+        </ConfirmationModal>
+        <ConfirmationModal
+          open={isSuccessModalVisible}
+          title={'Subscription cancelled.'}
+          description={'You can activate a new subscription at any time on the My Account tab.'}
+          icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
+          cancelButtonText={'Done'}
+          cancelButtonColor={'white'}
+          onCancelButtonPress={() => {
+            setIsSuccessModalVisible(false);
+          }}
+          >
+        </ConfirmationModal>
         <style jsx>{`
 
         `}</style>
