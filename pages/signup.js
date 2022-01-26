@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
 import { ExclamationIcon } from '@heroicons/react/solid';
@@ -9,12 +9,14 @@ import Colors from '../constants/colors';
 import UserTypes from '../constants/userTypes';
 import Genders from '../constants/genders';
 import Races from '../constants/races';
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function SignUp() {
   
   const router = useRouter();
   const userContext = useContext(UserContext);
   const imageInput = useRef(null);
+  var stripe = null;
 
   const [isUserTypeSelectModalVisible, setIsUserTypeSelectModalVisible] = useState(false);
   const [selectedUserTypeOption, setSelectedUserTypeOption] = useState({});
@@ -31,6 +33,10 @@ export default function SignUp() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(async () => {
+    stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+  });
   
   const onUserTypeOptionSelected = function(option) {
     setSelectedUserTypeOption(option);
@@ -91,7 +97,18 @@ export default function SignUp() {
         localStorage.setItem('TOKEN', response.token);
         setIsLoading(false);
         if (response.doctor) {
-          router.push('/checkout');
+          stripe.redirectToCheckout({
+            items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
+            successUrl: window.location.protocol + '//' + window.location.host + '/myaccount/',
+            cancelUrl: window.location.protocol + '//' + window.location.host + '/myaccount/',
+            clientReferenceId: String(response.doctor.id),
+            customerEmail: response.doctor.emailAddress
+          })
+          .then(function (result) {
+            if (result.error) {
+              
+            }
+          });
         } else {
           router.push('/myaccount/');
         }
