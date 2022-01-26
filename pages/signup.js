@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
 import { ExclamationIcon } from '@heroicons/react/solid';
+import S3 from 'aws-s3';
 import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
 import Colors from '../constants/colors';
@@ -13,6 +14,7 @@ export default function SignUp() {
   
   const router = useRouter();
   const userContext = useContext(UserContext);
+  const imageInput = useRef(null);
 
   const [isUserTypeSelectModalVisible, setIsUserTypeSelectModalVisible] = useState(false);
   const [selectedUserTypeOption, setSelectedUserTypeOption] = useState({});
@@ -21,7 +23,7 @@ export default function SignUp() {
   const [emailAddress, setEmailAddress] = useState(null);
   const [password, setPassword] = useState(null);
   const [passwordConfirm, setPasswordConfirm] = useState(null);
-  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [isGenderSelectModalVisible, setIsGenderSelectModalVisible] = useState(false);
   const [selectedGenderOption, setSelectedGenderOption] = useState({});
   const [isRaceSelectModalVisible, setIsRaceSelectModalVisible] = useState(false);
@@ -43,6 +45,32 @@ export default function SignUp() {
   const onRaceOptionSelected = function(option) {
     setSelectedRaceOption(option);
     setIsRaceSelectModalVisible(false);
+  }
+
+  const onChooseImage = async function() {
+    setIsLoading(true);
+    const file = imageInput.current.files[0];
+    const config = {
+      bucketName: 'wavelink-docme',
+      dirName: 'images/user',
+      region: 'us-east-1',
+      accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_SECRET,
+      s3Url: 'https://wavelink-docme.s3.amazonaws.com'
+    };
+    const fileName = 'user.' + Date.now() + '.' + Math.round(Math.random() * 1E9);
+    const S3Client = new S3(config);
+    S3Client
+      .uploadFile(file, fileName)
+      .then(data => {
+        setImageUrl(data.location);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to upload image to S3');
+        console.error(error);
+        setIsLoading(false);
+      });
   }
 
   const onSignUpButtonClicked = async function() {
@@ -105,7 +133,7 @@ export default function SignUp() {
       password: password,
       gender: selectedGenderOption.id,
       race: selectedRaceOption.id,
-      imageUrl: image && image.url
+      imageUrl: imageUrl
     };
     return fetch('http://www.docmeapp.com/' + selectedUserTypeOption.id + '/register', {
       method: 'POST',
@@ -249,6 +277,25 @@ export default function SignUp() {
                 onClick={() => setIsRaceSelectModalVisible(true)}
               />
             </div>
+            <div>
+              <form>
+                <input 
+                  ref={imageInput}
+                  type="file" 
+                  name="image"
+                  id="image"
+                  className="hidden"
+                  accept="image/png, image/gif, image/jpeg"
+                  readOnly
+                  onChange={onChooseImage}/>
+                <label className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-mediumBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md cursor-pointer" htmlFor="image">Choose an account image</label>
+              </form>
+            </div>
+            {imageUrl && (
+              <div className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md">
+                <img className="h-20 w-20 rounded-full" src={imageUrl} alt="" />
+              </div>
+            )}
             <button
               type="submit"
               className="group relative w-full flex justify-center mt-4 py-4 px-4 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white hover:bg-mediumBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
