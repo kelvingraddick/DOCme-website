@@ -26,6 +26,9 @@ export default function EditAccount() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
+  const [successModalTitle, setSuccessModalTitle] = useState(null);
+  const [successModalDescription, setSuccessModalDescription] = useState(null);
 
   useEffect(() => {
     setFirstName((userContext.patient || userContext.doctor || {}).firstName);
@@ -61,7 +64,9 @@ export default function EditAccount() {
         userContext.setPatient(response.patient || null);
         userContext.setDoctor(response.doctor || null);
         setIsLoading(false);
-        setIsConfirmationModalVisible(true);
+        setSuccessModalTitle('Success!');
+        setSuccessModalDescription('The changes were saved succesfully.');
+        setIsSuccessModalVisible(true);
       } else {
         setErrorMessage(response.errorMessage);
         setIsLoading(false);
@@ -105,6 +110,30 @@ export default function EditAccount() {
         'Authorization': 'Bearer ' + userContext.token
       },
       body: JSON.stringify(body)
+    })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          return responseJson;
+        })
+      } else {
+        return undefined;
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return undefined;
+    });
+  }
+
+  const cancelAccount = function () {
+    return fetch('http://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + userContext.token
+      }
     })
     .then((response) => { 
       if (response.status == 200) {
@@ -217,6 +246,12 @@ export default function EditAccount() {
             }
           </div>
         </div>
+        <div
+          className="flex justify-center mt-1 py-4 px-4 text-md font-medium rounded-md text-red hover:bg-lightGray"
+          onClick={() => setIsConfirmationModalVisible(true)}
+        >
+          Cancel Account
+        </div>
         <SearchModal
           open={isGenderSelectModalVisible}
           title={"Select gender:"}
@@ -235,18 +270,58 @@ export default function EditAccount() {
         </SearchModal>
         <ConfirmationModal
           open={isConfirmationModalVisible}
-          title={'Success!'}
-          description={'The changes were saved succesfully.'}
+          title={'Cancel account?'}
+          description={(userContext.doctor ? 'Your account won\'t show up for potential patients in this app anymore. This cannot be undone. Are you sure?' : 'This cannot be undone. Are you sure?')}
+          icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
+          cancelButtonText={'No'}
+          cancelButtonColor={'white'}
+          onCancelButtonPress={() => {
+            setIsConfirmationModalVisible(false);
+          }}
+          confirmButtonText={'Yes'}
+          confirmButtonColor={'red'}
+          onConfirmButtonPress={async () => {
+            setIsConfirmationModalVisible(false);
+            if (userContext.doctor != null && ['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) {
+              setErrorMessage('The doctor subscription is still active. Please go back to the My Account page and cancel the subscription first.');
+            } else {
+              setIsLoading(true);
+              var response = await cancelAccount();
+              if (response) {
+                if (response.isSuccess) {
+                  userContext.setToken(null);
+                  userContext.setPatient(null);
+                  userContext.setDoctor(null);
+                  localStorage.removeItem('TOKEN');
+                  setSuccessModalTitle('Success!');
+                  setSuccessModalDescription('The account was cancelled.');
+                  setIsSuccessModalVisible(true);
+                } else {
+                  setErrorMessage(response.errorMessage);
+                }
+                setIsLoading(false);
+              } else {
+                setErrorMessage('There was an error cancelling. Please try again.');
+                setIsLoading(false);
+              }
+            }
+          }}
+          >
+        </ConfirmationModal>
+        <ConfirmationModal
+          open={isSuccessModalVisible}
+          title={successModalTitle}
+          description={successModalDescription}
           icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
           cancelButtonText={'Close'}
           cancelButtonColor={'white'}
           onCancelButtonPress={() => {
-            setIsConfirmationModalVisible(false);
+            setIsSuccessModalVisible(false);
             router.push('/myaccount/');
           }}
           //confirmButtonText={'Confirm'}
           //confirmButtonColor={'red'}
-          //onConfirmlButtonPress={() => setIsConfirmationModalVisible(false)}
+          //onConfirmlButtonPress={() => setIsSuccessModalVisible(false)}
           >
         </ConfirmationModal>
         <style jsx>{`
