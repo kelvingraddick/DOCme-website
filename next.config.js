@@ -6,6 +6,7 @@ module.exports = {
       '/appointments': { page: '/appointments' },
       '/myaccount': { page: '/myaccount' },
       '/bookappointment': { page: '/bookappointment' },
+      '/editappointment': { page: '/editappointment' },
       '/changepassword': { page: '/changepassword' },
       '/editaccount': { page: '/editaccount' },
       '/editpractice': { page: '/editpractice' },

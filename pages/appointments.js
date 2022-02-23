@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { SearchIcon, LoginIcon, ChevronRightIcon } from '@heroicons/react/solid';
+import Link from "next/link";
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
 import Moment from 'moment';
@@ -92,7 +93,13 @@ export default function Appointments(props) {
           <ul role="list" className="divide-y divide-gray-200">
             {userContext.appointments.map((appointment) => (
               <li key={appointment.id}>
-                <a href={'/editappointment/' + appointment.id} className="block hover:bg-gray-50">
+                <Link
+                  href={{
+                    pathname: "/editappointment",
+                    query: { appointmentId: appointment.id },
+                  }}
+                  className="block hover:bg-gray-50"
+                >
                   <div className="flex items-center px-4 py-4 sm:px-6">
                     <div className="min-w-0 flex-1 flex items-center">
                       <div className="flex-shrink-0">
@@ -111,7 +118,7 @@ export default function Appointments(props) {
                       <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </div>
                   </div>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
