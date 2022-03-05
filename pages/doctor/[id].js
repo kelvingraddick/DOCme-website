@@ -141,12 +141,14 @@ export default function Doctor(props) {
               <p className="mt-1 text-sm font-light text-darkBlue truncate">{props.doctor.emailAddress}</p>
               <div className="mt-1 grid justify-items-center">
                 <div className="flex">
-                  <StarIcon className="h-5 w-5 text-green" aria-hidden="true" />
-                  <StarIcon className="h-5 w-5 text-green" aria-hidden="true" />
-                  <StarIcon className="h-5 w-5 text-green" aria-hidden="true" />
-                  <StarIcon className="h-5 w-5 text-green" aria-hidden="true" />
-                  <StarIcon className="h-5 w-5 text-green" aria-hidden="true" />
-                  <p className="ml-1 text-sm font-light text-gray-600">(471)</p>
+                  {
+                    [1, 2, 3, 4, 5].map((rating) => {
+                        let starColor = props.doctor.averageRating && props.doctor.averageRating >= rating ? 'text-green' : 'text-lightGray';
+                        return <StarIcon className={'h-5 w-5 ' + starColor} aria-hidden="true" />
+                      }
+                    )
+                  }
+                  <p className="ml-1 text-sm font-light text-gray-600">({props.doctor.numberOfRatings})</p>
                 </div>
               </div>
           </div>
