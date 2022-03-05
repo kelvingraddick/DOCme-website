@@ -95,7 +95,7 @@ export default function Appointments(props) {
               <li key={appointment.id}>
                 <Link
                   href={{
-                    pathname: "/editappointment",
+                    pathname: Moment(appointment.timestamp).isAfter(Moment()) ? "/editappointment" : "/rateappointment",
                     query: { appointmentId: appointment.id },
                   }}
                   className="block hover:bg-gray-50"
@@ -110,7 +110,7 @@ export default function Appointments(props) {
                           { appointment.doctor.practice &&
                             <p className="mt-1 text-sm font-light text-gray-600 truncate">{appointment.doctor.practice.addressLine1} {appointment.doctor.practice.addressLine2} {appointment.doctor.practice.city}, {appointment.doctor.practice.state} {appointment.doctor.practice.postalCode}</p>
                           }
-                          <p className="mt-1 text-sm font-light text-darkBlue truncate">{Moment(appointment.timestamp).format('dddd, MMMM Do') + ', ' + Moment(appointment.timestamp).format('h:mma')}</p>
+                          <p className="mt-1 text-sm font-light text-darkBlue truncate">{Moment(appointment.timestamp).isBefore(Moment()) ? '(Past)' : '' } {Moment(appointment.timestamp).format('dddd, MMMM Do') + ', ' + Moment(appointment.timestamp).format('h:mma')}</p>
                           <p className="mt-1 text-sm font-light text-darkBlue truncate">{appointment.specialty.name}</p>
                       </div>
                     </div>
