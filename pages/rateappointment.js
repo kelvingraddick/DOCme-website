@@ -143,36 +143,36 @@ export default function RateAppointment(props) {
           </div>
           <div className="py-4">
             <div className="text-lg text-white">
-              Select Rating Value
+              Rate your experience from 1 (lowest) to 5 (highest)
             </div>
             <div>
               <label htmlFor="value" className="sr-only">
-              Select Rating Value
+                Rate your experience from 1 (lowest) to 5 (highest)
               </label>
               <input
                 type="text"
                 name="value"
                 id="value"
                 className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                placeholder="Rating value"
+                placeholder="Select rating value"
                 readOnly
                 value={selectedValueOption.name}
                 onClick={() => setIsValueSelectModalVisible(true)}
               />
             </div>
             <div className="text-lg text-white mt-4">
-              How did it go?
+              Any comments about your experience?
             </div>
             <div>
               <label htmlFor="notes" className="sr-only">
-                Notes
+              Any comments about your experience?
               </label>
               <input
                 type="text"
                 name="notes"
                 id="notes"
                 className="mt-2 block w-full pl-3 pr-10 py-4 bg-highLight text-white placeholder-darkBlue border-0 focus:outline-none focus:ring-white focus:border-white sm:text-sm rounded-md"
-                placeholder="Rating notes"
+                placeholder="Enter comments"
                 value={notes}
                 onChange={(input) => setNotes(input.target.value)}
               />
