@@ -14,7 +14,7 @@ export default function DoctorRow(props) {
             { props.doctor.practice &&
               <p className="mt-1 text-sm font-light text-gray-600 truncate">{props.doctor.practice.addressLine1} {props.doctor.practice.addressLine2} {props.doctor.practice.city}, {props.doctor.practice.state} {props.doctor.practice.postalCode}</p>
             }
-            <div className="mt-1 flex">
+            <div className="mt-1">
               <RatingStarsView doctor={props.doctor} />
             </div>
         </div>

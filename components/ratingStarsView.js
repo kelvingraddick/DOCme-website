@@ -2,7 +2,7 @@ import { StarIcon } from '@heroicons/react/solid';
 
 export default function RatingStarsView(props) {
   return (
-    <>
+    <a href={'/doctor/' + props.doctor.id + '/ratings/'} className="flex">
       {
         [1, 2, 3, 4, 5].map((rating) => {
             let starColor = props.doctor.averageRating && props.doctor.averageRating >= rating ? 'text-green' : 'text-lightGray';
@@ -11,6 +11,6 @@ export default function RatingStarsView(props) {
         )
       }
       <p className="ml-1 text-sm font-light text-gray-600">({props.doctor.numberOfRatings})</p>
-    </>
+    </a>
   )
 }

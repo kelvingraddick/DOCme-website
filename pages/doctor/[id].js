@@ -141,9 +141,7 @@ export default function Doctor(props) {
               <p className="text-lg font-medium text-darkBlue truncate">{props.doctor.firstName + ' ' + props.doctor.lastName}</p>
               <p className="mt-1 text-sm font-light text-darkBlue truncate">{props.doctor.emailAddress}</p>
               <div className="mt-1 grid justify-items-center">
-                <div className="flex">
-                  <RatingStarsView doctor={props.doctor} />
-                </div>
+                <RatingStarsView doctor={props.doctor} />
               </div>
           </div>
         </div>
