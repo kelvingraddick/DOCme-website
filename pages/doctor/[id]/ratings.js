@@ -1,10 +1,35 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React from 'react';
 import { StarIcon } from '@heroicons/react/solid';
-import { useRouter } from 'next/router';
-import { UserContext } from '../../../context/userContext';
 import Moment from 'moment';
 import Layout from '../../../components/layout';
 import DoctorRow from '../../../components/doctorRow';
+
+export async function getStaticProps(context) {
+  console.log('doctorid: ' + context.params.id);
+  var ratings = await fetch('http://www.docmeapp.com/rating/doctor/' + context.params.id + '/list/', { method: 'GET' })
+  .then((response) => { 
+    if (response.status == 200) {
+      return response.json()
+      .then((responseJson) => {
+        if (responseJson.isSuccess) {
+          return responseJson.ratings;
+        }
+      })
+    }
+    return [];
+  })
+  .catch((error) => {
+    console.error(error);
+    return [];
+  });
+
+  console.log(ratings);
+  return {
+    props: {
+      ratings
+    },
+  }
+}
 
 export async function getStaticPaths() {
   var doctors = await fetch('http://www.docmeapp.com/doctor/search/', { method: 'GET' })
@@ -33,49 +58,17 @@ export async function getStaticPaths() {
 
 export default function DoctorRatings(props) {
 
-  const router = useRouter();
-  const userContext = useContext(UserContext);
-  const [ratings, setRatings] = useState([]);
-  const doctorId = router.query.id && Number(router.query.id);
-
-  useEffect(async () => {
-    if(!router.isReady) return;
-    var ratings = await fetch('http://www.docmeapp.com/rating/doctor/' + doctorId + '/list/', { 
-      method: 'GET',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + userContext.token
-      }
-    })
-    .then((response) => { 
-      if (response.status == 200) {
-        return response.json()
-        .then((responseJson) => {
-          if (responseJson.isSuccess) {
-            return responseJson.ratings;
-          }
-        })
-      }
-      return {};
-    })
-    .catch((error) => {
-      console.error(error);
-      setRatings([]);
-    });
-    setRatings(ratings);
-  }, [router.isReady]);
-
   return (
     <Layout>
       <div className="px-4 pt-1 sm:px-0 min-h-screen">
-        { ratings.length > 0 &&
+        { props.ratings.length > 0 &&
           <div className="bg-white shadow sm:rounded-lg mt-4 mb-2">
-            <DoctorRow doctor={ratings[0].doctor} />
+            <DoctorRow doctor={props.ratings[0].doctor} />
           </div>
         }
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul role="list" className="divide-y divide-gray-200">
-            {ratings.map((rating) => (
+            {props.ratings.map((rating) => (
               <li key={rating.id}>
                 <div className="flex items-center px-4 py-4 sm:px-6">
                   <div className="min-w-0 flex-1 flex items-center">
