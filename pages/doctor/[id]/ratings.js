@@ -6,6 +6,31 @@ import Moment from 'moment';
 import Layout from '../../../components/layout';
 import DoctorRow from '../../../components/doctorRow';
 
+export async function getStaticPaths() {
+  var doctors = await fetch('http://www.docmeapp.com/doctor/search/', { method: 'GET' })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          if (responseJson.isSuccess) {
+            return responseJson.doctors;
+          }
+        })
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
+
+  const paths = doctors.map((doctor) => ({
+    params: { id: doctor.id + '' },
+  }));
+
+  return { paths, fallback: false };
+}
+
 export default function DoctorRatings(props) {
 
   const router = useRouter();
