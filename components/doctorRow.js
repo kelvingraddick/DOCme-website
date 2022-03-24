@@ -1,5 +1,5 @@
-import { ChevronRightIcon, StarIcon } from '@heroicons/react/solid';
-import Colors from '../constants/colors';
+import { ChevronRightIcon } from '@heroicons/react/solid';
+import RatingStarsView from '../components/ratingStarsView';
 
 export default function DoctorRow(props) {
   return (
@@ -15,14 +15,7 @@ export default function DoctorRow(props) {
               <p className="mt-1 text-sm font-light text-gray-600 truncate">{props.doctor.practice.addressLine1} {props.doctor.practice.addressLine2} {props.doctor.practice.city}, {props.doctor.practice.state} {props.doctor.practice.postalCode}</p>
             }
             <div className="mt-1 flex">
-              {
-                [1, 2, 3, 4, 5].map((rating) => {
-                    let starColor = props.doctor.averageRating && props.doctor.averageRating >= rating ? 'text-green' : 'text-lightGray';
-                    return <StarIcon className={'h-5 w-5 ' + starColor} aria-hidden="true" />
-                  }
-                )
-              }
-              <p className="ml-1 text-sm font-light text-gray-600">({props.doctor.numberOfRatings})</p>
+              <RatingStarsView doctor={props.doctor} />
             </div>
         </div>
       </div>

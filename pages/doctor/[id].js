@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { LocationMarkerIcon, StarIcon, CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import Layout from '../../components/layout';
+import RatingStarsView from '../../components/ratingStarsView';
 import 'react-datepicker/dist/react-datepicker.css';
 import Geocode from "react-geocode";
 import GoogleMapReact from 'google-map-react';
@@ -141,14 +142,7 @@ export default function Doctor(props) {
               <p className="mt-1 text-sm font-light text-darkBlue truncate">{props.doctor.emailAddress}</p>
               <div className="mt-1 grid justify-items-center">
                 <div className="flex">
-                  {
-                    [1, 2, 3, 4, 5].map((rating) => {
-                        let starColor = props.doctor.averageRating && props.doctor.averageRating >= rating ? 'text-green' : 'text-lightGray';
-                        return <StarIcon className={'h-5 w-5 ' + starColor} aria-hidden="true" />
-                      }
-                    )
-                  }
-                  <p className="ml-1 text-sm font-light text-gray-600">({props.doctor.numberOfRatings})</p>
+                  <RatingStarsView doctor={props.doctor} />
                 </div>
               </div>
           </div>
