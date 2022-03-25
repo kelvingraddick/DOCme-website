@@ -11,7 +11,7 @@ import Moment from 'moment';
 import Genders from '../../constants/genders';
 import Races from '../../constants/races';
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   var doctor = await fetch('http://www.docmeapp.com/doctor/' + context.params.id, { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
@@ -59,34 +59,8 @@ export async function getStaticProps(context) {
     props: {
       doctor,
       coordinates
-    },
-    revalidate: 10
+    }
   }
-}
-
-export async function getStaticPaths() {
-  var doctors = await fetch('http://www.docmeapp.com/doctor/search/', { method: 'GET' })
-    .then((response) => { 
-      if (response.status == 200) {
-        return response.json()
-        .then((responseJson) => {
-          if (responseJson.isSuccess) {
-            return responseJson.doctors;
-          }
-        })
-      }
-      return [];
-    })
-    .catch((error) => {
-      console.error(error);
-      return [];
-    });
-
-  const paths = doctors.map((doctor) => ({
-    params: { id: doctor.id + '' },
-  }));
-
-  return { paths, fallback: 'blocking' };
 }
 
 export default function Doctor(props) {
