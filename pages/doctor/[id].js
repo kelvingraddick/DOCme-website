@@ -60,6 +60,7 @@ export async function getStaticProps(context) {
       doctor,
       coordinates
     },
+    revalidate: 10
   }
 }
 
@@ -85,7 +86,7 @@ export async function getStaticPaths() {
     params: { id: doctor.id + '' },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 }
 
 export default function Doctor(props) {

@@ -5,7 +5,6 @@ import Layout from '../../../components/layout';
 import DoctorRow from '../../../components/doctorRow';
 
 export async function getStaticProps(context) {
-  console.log('doctorid: ' + context.params.id);
   var ratings = await fetch('http://www.docmeapp.com/rating/doctor/' + context.params.id + '/list/', { method: 'GET' })
   .then((response) => { 
     if (response.status == 200) {
@@ -23,11 +22,11 @@ export async function getStaticProps(context) {
     return [];
   });
 
-  console.log(ratings);
   return {
     props: {
       ratings
     },
+    revalidate: 10
   }
 }
 
@@ -53,7 +52,7 @@ export async function getStaticPaths() {
     params: { id: doctor.id + '' },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 }
 
 export default function DoctorRatings(props) {
