@@ -12,7 +12,7 @@ import Genders from '../../constants/genders';
 import Races from '../../constants/races';
 
 export async function getServerSideProps(context) {
-  var doctor = await fetch('http://www.docmeapp.com/doctor/' + context.params.id, { method: 'GET' })
+  var doctor = await fetch('http://www.docmeapp.com/doctor/' + context.query.id, { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()

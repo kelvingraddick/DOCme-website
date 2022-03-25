@@ -5,7 +5,7 @@ import Layout from '../../../components/layout';
 import DoctorRow from '../../../components/doctorRow';
 
 export async function getServerSideProps(context) {
-  var ratings = await fetch('http://www.docmeapp.com/rating/doctor/' + context.params.id + '/list/', { method: 'GET' })
+  var ratings = await fetch('http://www.docmeapp.com/rating/doctor/' + context.query.id + '/list/', { method: 'GET' })
   .then((response) => { 
     if (response.status == 200) {
       return response.json()

@@ -223,7 +223,7 @@ export default function Home() {
           <ul role="list" className="divide-y divide-gray-200">
             {doctors.map((doctor) => (
               <li key={doctor.id}>
-                <a href={'/doctor/' + doctor.id} className="block hover:bg-gray-50">
+                <a href={'/doctor/?id=' + doctor.id} className="block hover:bg-gray-50">
                   <DoctorRow doctor={doctor} />
                 </a>
               </li>
