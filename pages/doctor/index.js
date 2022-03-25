@@ -11,66 +11,64 @@ import Moment from 'moment';
 import Genders from '../../constants/genders';
 import Races from '../../constants/races';
 
-export async function getServerSideProps(context) {
-  var doctor = await fetch('http://www.docmeapp.com/doctor/' + context.query.id, { method: 'GET' })
-    .then((response) => { 
-      if (response.status == 200) {
-        return response.json()
-        .then((responseJson) => {
-          if (responseJson.isSuccess) {
-            return responseJson.doctor;
-          }
-        })
-      }
-      return {};
-    })
-    .catch((error) => {
-      console.error(error);
-      return {};
-    });
+export default function Doctor(props) {
+  const router = useRouter();
 
-  var coordinates = {
-    center: {
-      lat: 37.78825,
-      lng: -122.4324
-    },
-    zoom: 13
-  };
-  if (doctor.practice) {
-    Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_API_KEY);
-    if (process.env.NODE_ENV == 'development') Geocode.enableDebug();
-    coordinates = await Geocode.fromAddress(doctor.practice.addressLine1 + " " + doctor.practice.addressLine2 + " " + doctor.practice.city + ", " + doctor.practice.state + " " + doctor.practice.postalCode)
+  const [doctor, setDoctor] = useState({});
+  const [coordinates, setCoordinates] = useState(null);
+  const [date, setDate] = useState(Moment().startOf('date'));
+  const [times, setTimes] = useState([]);
+
+  const CHANGE_DATE_DIRECTION = { BACK: 0, FORWARD: 1 }
+
+  useEffect(async () => {
+    if(!router.isReady) return;
+
+    var doctor = await fetch('http://www.docmeapp.com/doctor/' + router.query.id, { method: 'GET' })
       .then((response) => { 
-        return {
-          center: {
-            lat: response.results[0].geometry.location.lat,
-            lng: response.results[0].geometry.location.lng
-          },
-          zoom: 13
-        };
+        if (response.status == 200) {
+          return response.json()
+          .then((responseJson) => {
+            if (responseJson.isSuccess) {
+              return responseJson.doctor;
+            }
+          })
+        }
+        return {};
       })
       .catch((error) => {
         console.error(error);
         return {};
       });
-  }
+    setDoctor(doctor);
 
-  return {
-    props: {
-      doctor,
-      coordinates
+    var coordinates = {
+      center: {
+        lat: 37.78825,
+        lng: -122.4324
+      },
+      zoom: 13
+    };
+    if (doctor.practice) {
+      Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_API_KEY);
+      if (process.env.NODE_ENV == 'development') Geocode.enableDebug();
+      coordinates = await Geocode.fromAddress(doctor.practice.addressLine1 + " " + doctor.practice.addressLine2 + " " + doctor.practice.city + ", " + doctor.practice.state + " " + doctor.practice.postalCode)
+        .then((response) => { 
+          return {
+            center: {
+              lat: response.results[0].geometry.location.lat,
+              lng: response.results[0].geometry.location.lng
+            },
+            zoom: 13
+          };
+        })
+        .catch((error) => {
+          console.error(error);
+          return {};
+        });
     }
-  }
-}
-
-export default function Doctor(props) {
-  const router = useRouter();
-
-  const [doctor, setDoctor] = useState(props.doctor);
-  const [date, setDate] = useState(Moment().startOf('date'));
-  const [times, setTimes] = useState([]);
-
-  const CHANGE_DATE_DIRECTION = { BACK: 0, FORWARD: 1 }
+    setCoordinates(coordinates);
+  }, [router.isReady]);
 
   const changeTimes = function () {
     var times = [];
@@ -110,13 +108,13 @@ export default function Doctor(props) {
       <div className="bg-white shadow sm:rounded-lg mt-4">
         <div className="grid justify-items-center px-4 py-5 sm:p-6">
           <div className="flex-shrink-0 mb-2">
-            <img className="h-20 w-20 rounded-full" src={props.doctor.imageUrl || '/images/placeholder-user.png'} alt="" />
+            <img className="h-20 w-20 rounded-full" src={doctor.imageUrl || '/images/placeholder-user.png'} alt="" />
           </div>
           <div className="min-w-0 flex-1 text-center">
-              <p className="text-lg font-medium text-darkBlue truncate">{props.doctor.firstName + ' ' + props.doctor.lastName}</p>
-              <p className="mt-1 text-sm font-light text-darkBlue truncate">{props.doctor.emailAddress}</p>
+              <p className="text-lg font-medium text-darkBlue truncate">{doctor.firstName + ' ' + doctor.lastName}</p>
+              <p className="mt-1 text-sm font-light text-darkBlue truncate">{doctor.emailAddress}</p>
               <div className="mt-1 grid justify-items-center">
-                <RatingStarsView doctor={props.doctor} />
+                <RatingStarsView doctor={doctor} />
               </div>
           </div>
         </div>
@@ -146,7 +144,7 @@ export default function Doctor(props) {
                 <Link
                   href={{
                     pathname: "/bookappointment",
-                    query: { doctorId: props.doctor.id, date: date.toJSON(), time: time.toJSON() },
+                    query: { doctorId: doctor.id, date: date.toJSON(), time: time.toJSON() },
                   }}
                 >
                   <button className="group relative w-full flex justify-center mt-1 mb-3 mr-3 py-2 px-2 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white hover:bg-mediumBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -161,28 +159,28 @@ export default function Doctor(props) {
           }
         </div>
       </div>
-      { props.coordinates && props.doctor.practice &&
+      { coordinates && doctor.practice &&
         <div className="bg-white shadow sm:rounded-lg mt-4">
           <div className="grid justify-items-center px-4 py-5 sm:p-6">
             <div className="min-w-full flex-1 text-center">
                 <p className="text-lg font-medium text-darkBlue">Location</p>
-                { props.coordinates &&
+                { coordinates &&
                   <div className="mt-1" style={{ height: '200px', width: '100%' }}>
                     <GoogleMapReact
                       bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY }}
-                      defaultCenter={props.coordinates.center}
-                      defaultZoom={props.coordinates.zoom}
+                      defaultCenter={coordinates.center}
+                      defaultZoom={coordinates.zoom}
                     >
                       <LocationMarkerIcon className="h-12 w-12 relative bottom-12 text-red" aria-hidden="true"
-                        lat={props.coordinates.center.lat}
-                        lng={props.coordinates.center.lng}
+                        lat={coordinates.center.lat}
+                        lng={coordinates.center.lng}
                         text="Marker"
                       />
                     </GoogleMapReact>
                   </div>
                 }
-                { props.doctor.practice &&
-                  <p className="mt-1 text-base font-thin text-darkGray">{props.doctor.practice.addressLine1} {props.doctor.practice.addressLine2} {props.doctor.practice.city}, {props.doctor.practice.state} {props.doctor.practice.postalCode}</p>
+                { doctor.practice &&
+                  <p className="mt-1 text-base font-thin text-darkGray">{doctor.practice.addressLine1} {doctor.practice.addressLine2} {doctor.practice.city}, {doctor.practice.state} {doctor.practice.postalCode}</p>
                 }
             </div>
           </div>
@@ -194,18 +192,18 @@ export default function Doctor(props) {
             <p className="text-lg font-medium text-darkBlue">About</p>
           </div>
           <div className="min-w-0 justify-self-start">
-            <p className="mt-1 text-sm text-darkGray">{props.doctor.description}</p>
+            <p className="mt-1 text-sm text-darkGray">{doctor.description}</p>
           </div>
         </div>
       </div>
-      { props.doctor.images && props.doctor.images.length > 0 &&
+      { doctor.images && doctor.images.length > 0 &&
         <div className="bg-white shadow sm:rounded-lg mt-4">
           <div className="grid justify-items-center px-4 py-5 sm:p-6">
             <div className="min-w-0 flex-1 text-center">
               <p className="text-lg font-medium text-darkBlue">Images</p>
             </div>
             <div className="mt-4 max-w-full flex flex-row space-x-4 overflow-x-scroll">
-              {props.doctor.images.map((image) => (
+              {doctor.images.map((image) => (
                 <img src={image.url} alt="" className="h-52 w-52 object-cover pointer-events-none group-hover:opacity-75" />
               ))}
             </div>
@@ -219,8 +217,8 @@ export default function Doctor(props) {
           </div>
           <div className="min-w-0 justify-self-start">
             <p className="mt-1 text-sm text-darkGray">
-              Gender - { Genders.find(x => { return x.id === props.doctor.gender })?.name || 'Not set'}<br />
-              Race - { Races.find(x => { return x.id === props.doctor.race })?.name || 'Not set'}
+              Gender - { Genders.find(x => { return x.id === doctor.gender })?.name || 'Not set'}<br />
+              Race - { Races.find(x => { return x.id === doctor.race })?.name || 'Not set'}
             </p>
           </div>
         </div>
