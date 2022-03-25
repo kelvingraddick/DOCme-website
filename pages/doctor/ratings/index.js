@@ -1,47 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/router";
 import { StarIcon } from '@heroicons/react/solid';
 import Moment from 'moment';
 import Layout from '../../../components/layout';
 import DoctorRow from '../../../components/doctorRow';
 
-export async function getServerSideProps(context) {
-  var ratings = await fetch('http://www.docmeapp.com/rating/doctor/' + context.query.id + '/list/', { method: 'GET' })
-  .then((response) => { 
-    if (response.status == 200) {
-      return response.json()
-      .then((responseJson) => {
-        if (responseJson.isSuccess) {
-          return responseJson.ratings;
-        }
-      })
-    }
-    return [];
-  })
-  .catch((error) => {
-    console.error(error);
-    return [];
-  });
-
-  return {
-    props: {
-      ratings
-    }
-  }
-}
-
 export default function DoctorRatings(props) {
+  const router = useRouter();
+
+  const [ratings, setRatings] = useState([]);
+
+  useEffect(async () => {
+    if(!router.isReady) return;
+    var ratings = await fetch('http://www.docmeapp.com/rating/doctor/' + router.query.id + '/list/', { method: 'GET' })
+      .then((response) => { 
+        if (response.status == 200) {
+          return response.json()
+          .then((responseJson) => {
+            if (responseJson.isSuccess) {
+              return responseJson.ratings;
+            }
+          })
+        }
+        return [];
+      })
+      .catch((error) => {
+        console.error(error);
+        return [];
+      });
+    setRatings(ratings);
+  }, [router.isReady]);
 
   return (
     <Layout>
       <div className="px-4 pt-1 sm:px-0 min-h-screen">
-        { props.ratings.length > 0 &&
+        { ratings.length > 0 &&
           <div className="bg-white shadow sm:rounded-lg mt-4 mb-2">
-            <DoctorRow doctor={props.ratings[0].doctor} />
+            <DoctorRow doctor={ratings[0].doctor} />
           </div>
         }
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul role="list" className="divide-y divide-gray-200">
-            {props.ratings.map((rating) => (
+            {ratings.map((rating) => (
               <li key={rating.id}>
                 <div className="flex items-center px-4 py-4 sm:px-6">
                   <div className="min-w-0 flex-1 flex items-center">
