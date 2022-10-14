@@ -15,6 +15,8 @@ module.exports = {
       '/editschedule': { page: '/editschedule' },
       '/signin': { page: '/signin' },
       '/signup': { page: '/signup' },
+      '/forgotpassword': { page: '/forgotpassword' },
+      '/resetpassword': { page: '/resetpassword' },
       '/termsofuse': { page: '/termsofuse' },
       '/privacypolicy': { page: '/privacypolicy' }
     };
