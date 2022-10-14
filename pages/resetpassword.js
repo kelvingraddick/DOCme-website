@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { ExclamationIcon } from '@heroicons/react/solid';
 import { LoginIcon } from '@heroicons/react/solid';
-import Layout from '../../components/layout';
-import SearchModal from '../../components/searchModal';
-import Colors from '../../constants/colors';
-import UserTypes from '../../constants/userTypes';
+import Layout from '../components/layout';
+import SearchModal from '../components/searchModal';
+import Colors from '../constants/colors';
+import UserTypes from '../constants/userTypes';
 
 export default function ResetPassword() {
   
