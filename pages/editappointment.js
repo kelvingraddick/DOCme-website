@@ -281,7 +281,7 @@ export default function EditAppointment(props) {
         </SearchModal>
         <ConfirmationModal
           open={isUpdateConfirmationModalVisible}
-          title={'Success! The appointment has been booked!'}
+          title={'Success! The appointment has been updated!'}
           description={'Thank you! You will recieve and email soon.'}
           icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
           cancelButtonText={'Close'}
@@ -298,7 +298,7 @@ export default function EditAppointment(props) {
         <ConfirmationModal
           open={isDeleteConfirmationModalVisible}
           title={'The appointment was deleted.'}
-          description={'The appointment has been cancelled an the physician/office notified.'}
+          description={'The appointment has been cancelled and the physician/office notified.'}
           icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
           cancelButtonText={'Close'}
           cancelButtonColor={'white'}
