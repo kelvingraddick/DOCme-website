@@ -127,7 +127,7 @@ export default function EditAccount() {
     });
   }
 
-  const cancelAccount = function () {
+  const deleteAccount = function () {
     return fetch('http://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/', {
       method: 'DELETE',
       headers: {
@@ -250,7 +250,7 @@ export default function EditAccount() {
           className="flex justify-center mt-1 py-4 px-4 text-md font-medium rounded-md text-red hover:bg-lightGray"
           onClick={() => setIsConfirmationModalVisible(true)}
         >
-          Cancel Account
+          Delete Account
         </div>
         <SearchModal
           open={isGenderSelectModalVisible}
@@ -270,7 +270,7 @@ export default function EditAccount() {
         </SearchModal>
         <ConfirmationModal
           open={isConfirmationModalVisible}
-          title={'Cancel account?'}
+          title={'Delete account?'}
           description={(userContext.doctor ? 'Your account won\'t show up for potential patients in this app anymore. This cannot be undone. Are you sure?' : 'This cannot be undone. Are you sure?')}
           icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
           cancelButtonText={'No'}
@@ -282,28 +282,24 @@ export default function EditAccount() {
           confirmButtonColor={'red'}
           onConfirmButtonPress={async () => {
             setIsConfirmationModalVisible(false);
-            if (userContext.doctor != null && ['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) {
-              setErrorMessage('The doctor subscription is still active. Please go back to the My Account page and cancel the subscription first.');
-            } else {
-              setIsLoading(true);
-              var response = await cancelAccount();
-              if (response) {
-                if (response.isSuccess) {
-                  userContext.setToken(null);
-                  userContext.setPatient(null);
-                  userContext.setDoctor(null);
-                  localStorage.removeItem('TOKEN');
-                  setSuccessModalTitle('Success!');
-                  setSuccessModalDescription('The account was cancelled.');
-                  setIsSuccessModalVisible(true);
-                } else {
-                  setErrorMessage(response.errorMessage);
-                }
-                setIsLoading(false);
+            setIsLoading(true);
+            var response = await deleteAccount();
+            if (response) {
+              if (response.isSuccess) {
+                userContext.setToken(null);
+                userContext.setPatient(null);
+                userContext.setDoctor(null);
+                localStorage.removeItem('TOKEN');
+                setSuccessModalTitle('Success!');
+                setSuccessModalDescription('The account was deleted.');
+                setIsSuccessModalVisible(true);
               } else {
-                setErrorMessage('There was an error cancelling. Please try again.');
-                setIsLoading(false);
+                setErrorMessage(response.errorMessage);
               }
+              setIsLoading(false);
+            } else {
+              setErrorMessage('There was an error deleting. Please try again.');
+              setIsLoading(false);
             }
           }}
           >
