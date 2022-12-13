@@ -93,32 +93,59 @@ export default function Appointments(props) {
           <ul role="list" className="divide-y divide-gray-200">
             {userContext.appointments.map((appointment) => (
               <li key={appointment.id}>
-                <Link
-                  href={{
-                    pathname: Moment(appointment.timestamp).isAfter(Moment()) ? "/editappointment" : "/rateappointment",
-                    query: { appointmentId: appointment.id },
-                  }}
-                  className="block hover:bg-gray-50"
-                >
-                  <div className="flex items-center px-4 py-4 sm:px-6">
-                    <div className="min-w-0 flex-1 flex items-center">
-                      <div className="flex-shrink-0">
-                        <img className="h-20 w-20 rounded-full" src={appointment.doctor.imageUrl || '/images/placeholder-user.png'} alt="" />
+                { userContext.patient &&
+                  <Link
+                    href={{
+                      pathname: Moment(appointment.timestamp).isAfter(Moment()) ? "/editappointment" : "/rateappointment",
+                      query: { appointmentId: appointment.id },
+                    }}
+                    className="block hover:bg-gray-50"
+                  >
+                    <div className="flex items-center px-4 py-4 sm:px-6">
+                      <div className="min-w-0 flex-1 flex items-center">
+                        <div className="flex-shrink-0">
+                          <img className="h-20 w-20 rounded-full" src={appointment.doctor.imageUrl || '/images/placeholder-user.png'} alt="" />
+                        </div>
+                        <div className="min-w-0 flex-1 px-4">
+                            <p className="text-base font-medium text-darkBlue truncate">{appointment.doctor.firstName + ' ' + appointment.doctor.lastName}</p>
+                            { appointment.doctor.practice &&
+                              <p className="mt-1 text-sm font-light text-gray-600 truncate">{appointment.doctor.practice.addressLine1} {appointment.doctor.practice.addressLine2} {appointment.doctor.practice.city}, {appointment.doctor.practice.state} {appointment.doctor.practice.postalCode}</p>
+                            }
+                            <p className="mt-1 text-sm font-light text-darkBlue truncate">{Moment(appointment.timestamp).isBefore(Moment()) ? '(Past)' : '' } {Moment(appointment.timestamp).format('dddd, MMMM Do') + ', ' + Moment(appointment.timestamp).format('h:mma')}</p>
+                            <p className="mt-1 text-sm font-light text-darkBlue truncate">{appointment.specialty.name}</p>
+                        </div>
                       </div>
-                      <div className="min-w-0 flex-1 px-4">
-                          <p className="text-base font-medium text-darkBlue truncate">{appointment.doctor.firstName + ' ' + appointment.doctor.lastName}</p>
-                          { appointment.doctor.practice &&
-                            <p className="mt-1 text-sm font-light text-gray-600 truncate">{appointment.doctor.practice.addressLine1} {appointment.doctor.practice.addressLine2} {appointment.doctor.practice.city}, {appointment.doctor.practice.state} {appointment.doctor.practice.postalCode}</p>
-                          }
-                          <p className="mt-1 text-sm font-light text-darkBlue truncate">{Moment(appointment.timestamp).isBefore(Moment()) ? '(Past)' : '' } {Moment(appointment.timestamp).format('dddd, MMMM Do') + ', ' + Moment(appointment.timestamp).format('h:mma')}</p>
-                          <p className="mt-1 text-sm font-light text-darkBlue truncate">{appointment.specialty.name}</p>
+                      <div>
+                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                       </div>
                     </div>
-                    <div>
-                      <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </Link>
+                }
+                { userContext.doctor &&
+                  <Link
+                    href={{
+                      pathname: "/editappointment",
+                      query: { appointmentId: appointment.id },
+                    }}
+                    className="block hover:bg-gray-50"
+                  >
+                    <div className="flex items-center px-4 py-4 sm:px-6">
+                      <div className="min-w-0 flex-1 flex items-center">
+                        <div className="flex-shrink-0">
+                          <img className="h-20 w-20 rounded-full" src={appointment.patient.imageUrl || '/images/placeholder-user.png'} alt="" />
+                        </div>
+                        <div className="min-w-0 flex-1 px-4">
+                            <p className="text-base font-medium text-darkBlue truncate">{appointment.patient.firstName + ' ' + appointment.patient.lastName}</p>
+                            <p className="mt-1 text-sm font-light text-darkBlue truncate">{Moment(appointment.timestamp).isBefore(Moment()) ? '(Past)' : '' } {Moment(appointment.timestamp).format('dddd, MMMM Do') + ', ' + Moment(appointment.timestamp).format('h:mma')}</p>
+                            <p className="mt-1 text-sm font-light text-darkBlue truncate">Speciality: {appointment.specialty.name}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                }
               </li>
             ))}
           </ul>
