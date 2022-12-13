@@ -9,6 +9,8 @@ import DoctorRow from '../components/doctorRow';
 import 'react-datepicker/dist/react-datepicker.css';
 import Moment from 'moment';
 import Colors from '../constants/colors';
+import Genders from '../constants/genders';
+import Races from '../constants/races';
 
 export default function EditAppointment(props) {
   const router = useRouter();
@@ -198,10 +200,44 @@ export default function EditAppointment(props) {
   return (
     <Layout>
       <div className="px-4 pt-1 sm:px-0">
-        { appointment.doctor &&
-          <div className="bg-white shadow sm:rounded-lg mt-4">
-            <DoctorRow doctor={appointment.doctor} />
-          </div>
+        { appointment &&
+          <>
+            { userContext.patient && appointment.doctor &&
+              <div className="bg-white shadow sm:rounded-lg mt-4">
+                <DoctorRow doctor={appointment.doctor} />
+              </div>
+            }
+            { userContext.doctor && appointment.patient &&
+              <>
+                <div className="bg-white shadow sm:rounded-lg mt-4">
+                  <div className="flex items-center px-4 py-4 sm:px-6">
+                    <div className="min-w-0 flex-1 flex items-center">
+                      <div className="flex-shrink-0">
+                        <img className="h-20 w-20 rounded-full" src={appointment.patient.imageUrl || '/images/placeholder-user.png'} alt="" />
+                      </div>
+                      <div className="min-w-0 flex-1 px-4">
+                        <p className="text-base font-medium text-darkBlue truncate">{appointment.patient.firstName + ' ' + appointment.patient.lastName}</p>
+                        <p className="mt-1 text-sm font-light text-darkBlue truncate">{appointment.patient.emailAddress} {appointment.patient.phoneNumber}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white shadow sm:rounded-lg mt-4">
+                  <div className="grid justify-items-center px-4 py-5 sm:p-6">
+                    <div className="min-w-0 flex-1 text-center">
+                      <p className="text-lg font-medium text-darkBlue">Additional Information</p>
+                    </div>
+                    <div className="min-w-0 justify-self-start">
+                      <p className="mt-1 text-sm text-darkGray">
+                        Gender - { Genders.find(x => { return x.id === appointment.patient.gender })?.name || 'Not set'}<br />
+                        Race - { Races.find(x => { return x.id === appointment.patient.race })?.name || 'Not set'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </>
+            }
+          </>
         }
         <div className="rounded-lg p-6 h-auto bg-lightBlue mt-4 mb-2">
           <div className="text-lg text-white">
