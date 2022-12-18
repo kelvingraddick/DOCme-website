@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { Fragment, useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
-import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, LockClosedIcon, ExclamationIcon, CheckIcon, CheckCircleIcon } from '@heroicons/react/solid';
+import { Dialog, Transition } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
+import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, RibbonIcon, LockClosedIcon, ExclamationIcon, CheckIcon, CheckCircleIcon, BookmarkIcon } from '@heroicons/react/solid';
 import ConfirmationModal from '../components/confirmationModal';
 import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -22,8 +24,16 @@ export default function MyAccount(props) {
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorAction, setErrorAction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
+
+  const [isSpecialtySearchModalVisible, setIsSpecialtySearchModalVisible] = useState(false);
+  const [isSpecialtyConfirmationModalVisible, setIsSpecialtyConfirmationModalVisible] = useState(false);
+  const [specialtyOptions, setSpecialtyOptions] = useState([]);
+  const [selectedSpecialtyOptionIds, setSelectedSpecialtyOptionIds] = useState([]);
+  const [saveSpecialtiesErrorMessage, setSaveSpecialtiesErrorMessage] = useState(null);
+  const [saveSpecialtiesIsLoading, setSaveSpecialtiesIsLoading] = useState(false);
 
   const options = {
     'Sign in': { icon: <LoginIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'logged-out', action: () => { router.push('/signin'); } },
@@ -32,6 +42,7 @@ export default function MyAccount(props) {
     'Change Password': { icon: <LockClosedIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in', action: () => { router.push('/changepassword'); } },
     'Edit Practice': { icon: <OfficeBuildingIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in-doctor', action: () => { router.push('/editpractice'); } },
     'Edit Schedule': { icon: <CalendarIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in-doctor', action: () => { router.push('/editschedule'); } },
+    'Edit Specialties': { icon: <BookmarkIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'signed-in-doctor', action: () => { setIsSpecialtySearchModalVisible(true); } },
     'Terms of use': { icon: <InformationCircleIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => { router.push('/termsofuse'); } },
     'Privacy Policy': { icon: <EyeOffIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => { router.push('/privacypolicy'); } },
     'Give site feedback': { icon: <BadgeCheckIcon className="h-6 w-6 text-darkBlue" aria-hidden="true" />, visible: 'always', action: () => { window.open('mailto:faguebor@gmail.com?subject=DOCme%20-%20Give%20site%20feedback%21&body=Please%20share%20your%20feedback%20-%20be%20sure%20to%20include%20your%20account%20info%2C%20screenshots%2C%20and%2For%20any%20other%20information%20that%20could%20be%20useful.'); } },
@@ -41,7 +52,13 @@ export default function MyAccount(props) {
 
   useEffect(async () => {
     stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+
     checkForErrorMessage();
+
+    if (userContext.doctor) {
+      setSelectedSpecialtyOptionIds(userContext.doctor.specialties.map(specialty => { return specialty.id; }));
+      await getSpecialtyOptions();
+    }
   }, [userContext]);
 
   const signOut = async function () {
@@ -92,6 +109,86 @@ export default function MyAccount(props) {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + userContext.token
       }
+    })
+    .then((response) => { 
+      if (response.status == 200) {
+        return response.json()
+        .then((responseJson) => {
+          return responseJson;
+        })
+      } else {
+        return undefined;
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return undefined;
+    });
+  }
+
+  const getSpecialtyOptions = async function(text) {
+    var url = 'http://www.docmeapp.com/specialty/' + ((text && text.length > 0) ? ('search/' + encodeURIComponent(text)) : 'list/');
+    var specialties = await fetch(url, { method: 'GET' })
+      .then((response) => { 
+        if (response.status == 200) {
+          return response.json()
+          .then((responseJson) => {
+            if (responseJson.isSuccess) {
+              return responseJson.specialties;
+            }
+          })
+        }
+        return [];
+      })
+      .catch((error) => {
+        console.error(error);
+        return [];
+      });
+    setSpecialtyOptions(specialties);
+  }
+
+  const onToggleSpecialtyOption = async function(id) {
+    var optionIds = JSON.parse(JSON.stringify(selectedSpecialtyOptionIds));
+    if (optionIds.includes(id)) {
+      optionIds = optionIds.filter(function(value, index, arr){ 
+        return value !== id;
+      });
+    } else {
+      optionIds.push(id);
+    }
+    setSelectedSpecialtyOptionIds(optionIds);
+  }
+
+  const onSaveSpecialtiesButtonClicked = async function() {
+    setSaveSpecialtiesIsLoading(true);
+    var response = await saveSpecialties();
+    if (response && response.isSuccess) {
+      userContext.setDoctor(response.doctor || null);
+      setSaveSpecialtiesIsLoading(false);
+      setSaveSpecialtiesErrorMessage(null);
+      setIsSpecialtySearchModalVisible(false);
+      setIsSpecialtyConfirmationModalVisible(true);
+    } else {
+      setSaveSpecialtiesErrorMessage(
+        response.errorMessage && response.errorMessage.length > 0 ? 
+          response.errorMessage :
+          'There was an error saving changes; please update entries and try again'
+      );
+      setSaveSpecialtiesIsLoading(false);
+    }
+  }
+
+  const saveSpecialties = async function () {
+    var body = {
+      specialtyIds: selectedSpecialtyOptionIds
+    };
+    return fetch('http://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/specialties', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + userContext.token
+      },
+      body: JSON.stringify(body)
     })
     .then((response) => { 
       if (response.status == 200) {
@@ -213,6 +310,96 @@ export default function MyAccount(props) {
           }}
           >
         </ConfirmationModal>
+        <ConfirmationModal
+          open={isSpecialtyConfirmationModalVisible}
+          title={'Specialties saved successfully!'}
+          description={'Your account is now searchable by these specialties.'}
+          icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
+          cancelButtonText={'Done'}
+          cancelButtonColor={'white'}
+          onCancelButtonPress={() => {
+            setIsSpecialtyConfirmationModalVisible(false);
+          }}
+          >
+        </ConfirmationModal>
+        <Transition.Root show={isSpecialtySearchModalVisible} as={Fragment}>
+          <Dialog as="div" className="fixed inset-0 overflow-hidden" onClose={() => setIsSpecialtySearchModalVisible(false)}>
+            <div className="absolute inset-0 overflow-hidden">
+              <Dialog.Overlay className="absolute inset-0" />
+
+              <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex sm:pl-16">
+                <Transition.Child
+                  as={Fragment}
+                  enter="transform transition ease-in-out duration-500 sm:duration-700"
+                  enterFrom="translate-x-full"
+                  enterTo="translate-x-0"
+                  leave="transform transition ease-in-out duration-500 sm:duration-700"
+                  leaveFrom="translate-x-0"
+                  leaveTo="translate-x-full"
+                >
+                  <div className="w-screen max-w-md">
+                    <div className="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
+                      <div className="p-4 border-b border-gray-200">
+                        <div className="flex items-start justify-between">
+                          <Dialog.Title className="text-lg font-medium text-gray-900">Find and select all your <b>specialties</b> below:</Dialog.Title>
+                          <div className="ml-3 h-7 flex items-center">
+                            <button
+                              type="button"
+                              className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
+                              onClick={() => setIsSpecialtySearchModalVisible(false)}
+                            >
+                              <span className="sr-only">Close panel</span>
+                              <XIcon className="h-6 w-6" aria-hidden="true" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="px-1 py-2 border-b border-gray-200">
+                        <input
+                          type="text"
+                          name="name"
+                          id="name"
+                          className="block w-full border-0 border-transparent focus:ring-0 sm:text-sm"
+                          placeholder="Type here to filter specialties.."
+                          onChange={(input) => getSpecialtyOptions(input.target.value)}
+                        />
+                      </div>
+                      <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
+                        {specialtyOptions.map((option) => (
+                          <li key={option.id} onClick={() => onToggleSpecialtyOption(option.id)} className="border-b border-gray-200">
+                            <div className="relative group py-4 px-4 flex items-center">
+                              <div className="flex flex-1 justify-between">
+                                <div className="flex-shrink-0 sm:text-sm">{option.name}</div>
+                                { selectedSpecialtyOptionIds.includes(option.id) &&
+                                  <CheckCircleIcon className="h-5 w-5 text-green" aria-hidden="true" />
+                                }
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="p-4 border-t border-gray-200">
+                        <button
+                          type="submit"
+                          className="group relative w-full flex justify-center py-4 px-4 bg-darkBlue border border-transparent text-md font-medium rounded-md text-white hover:bg-mediumBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          onClick={onSaveSpecialtiesButtonClicked}
+                          disabled={saveSpecialtiesIsLoading}
+                        >
+                          Save Changes
+                        </button>
+                        { saveSpecialtiesErrorMessage &&
+                          <div className="mt-2 flex flex-row text-sm text-white">
+                            <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />&nbsp;&nbsp;{saveSpecialtiesErrorMessage}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition.Root>
         <style jsx>{`
 
         `}</style>
