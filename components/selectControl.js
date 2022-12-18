@@ -7,7 +7,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SearchModal(props) {
+export default function SearchControl(props) {
   return (
     <Listbox value={props.value} onChange={props.onChange}>
       <Listbox.Label className="block text-sm font-medium text-gray-700">{props.label}</Listbox.Label>
