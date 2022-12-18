@@ -147,7 +147,7 @@ export default function Home() {
           </div>
           <div className="py-6">
             <div>
-              <label htmlFor="speciality" className="sr-only">
+              <label htmlFor="specialty" className="sr-only">
                 Specialty
               </label>
               <input

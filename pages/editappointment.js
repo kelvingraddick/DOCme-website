@@ -134,7 +134,7 @@ export default function EditAppointment(props) {
   const validate = async function () {
     var errorMessage = null;
     if (!selectedSpecialtyOption.id) {
-      errorMessage = 'Must select a speciality.';
+      errorMessage = 'Must select a specialty.';
     } else if (!userContext.patient || !userContext.token) {
       errorMessage = 'Must sign in or sign up as a patient to book.';
     }
@@ -248,10 +248,10 @@ export default function EditAppointment(props) {
           </div>
           <div className="py-4">
             <div className="text-lg text-white">
-              Speciality
+              Specialty
             </div>
             <div>
-              <label htmlFor="speciality" className="sr-only">
+              <label htmlFor="specialty" className="sr-only">
                 Specialty
               </label>
               <input

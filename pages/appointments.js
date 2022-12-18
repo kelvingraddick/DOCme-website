@@ -137,7 +137,7 @@ export default function Appointments(props) {
                         <div className="min-w-0 flex-1 px-4">
                             <p className="text-base font-medium text-darkBlue truncate">{appointment.patient.firstName + ' ' + appointment.patient.lastName}</p>
                             <p className="mt-1 text-sm font-light text-darkBlue truncate">{Moment(appointment.timestamp).isBefore(Moment()) ? '(Past)' : '' } {Moment(appointment.timestamp).format('dddd, MMMM Do') + ', ' + Moment(appointment.timestamp).format('h:mma')}</p>
-                            <p className="mt-1 text-sm font-light text-darkBlue truncate">Speciality: {appointment.specialty.name}</p>
+                            <p className="mt-1 text-sm font-light text-darkBlue truncate">Specialty: {appointment.specialty.name}</p>
                         </div>
                       </div>
                       <div>
