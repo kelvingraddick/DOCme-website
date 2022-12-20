@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import { UserContext } from '../context/userContext';
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, RibbonIcon, LockClosedIcon, ExclamationIcon, CheckIcon, CheckCircleIcon, BookmarkIcon } from '@heroicons/react/solid';
+import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon, BadgeCheckIcon, ShareIcon, OfficeBuildingIcon, CalendarIcon, LockClosedIcon, ExclamationIcon, CheckIcon, CheckCircleIcon, BookmarkIcon, CreditCardIcon } from '@heroicons/react/solid';
 import ConfirmationModal from '../components/confirmationModal';
 import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
-import { loadStripe } from "@stripe/stripe-js";
+import { useStripe } from '@stripe/react-stripe-js';
 
 export async function getStaticProps(context) {
   return {
@@ -19,14 +19,14 @@ export default function MyAccount(props) {
 
   const router = useRouter();
   const userContext = useContext(UserContext);
-  var stripe = null;
 
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [errorAction, setErrorAction] = useState(null);
+  const stripe = useStripe();
+
   const [isLoading, setIsLoading] = useState(false);
 
-  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
-  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
+  const [isCancelSubscriptionConfirmationModalVisible, setIsCancelSubscriptionConfirmationModalVisible] = useState(false);
+  const [isCancelSubscriptionSuccessModalVisible, setIsCancelSubscriptionSuccessModalVisible] = useState(false);
+  const [cancelSubscriptionErrorMessage, setCancelSubscriptionErrorMessage] = useState(null);
 
   const [isSpecialtySearchModalVisible, setIsSpecialtySearchModalVisible] = useState(false);
   const [isSpecialtyConfirmationModalVisible, setIsSpecialtyConfirmationModalVisible] = useState(false);
@@ -51,10 +51,6 @@ export default function MyAccount(props) {
   };
 
   useEffect(async () => {
-    stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
-
-    checkForErrorMessage();
-
     if (userContext.doctor) {
       setSelectedSpecialtyOptionIds(userContext.doctor.specialties.map(specialty => { return specialty.id; }));
       await getSpecialtyOptions();
@@ -76,30 +72,21 @@ export default function MyAccount(props) {
     */
   }
 
-  const checkForErrorMessage = function () {
-    if (userContext.doctor != null && !['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) {
-      setErrorMessage('Doctor subscription inactive. Tap to add payment!');
+  const setupSubscription = async function() {
+    setIsLoading(true);
+    await stripe.redirectToCheckout({
+      items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
+      successUrl: window.location.href,
+      cancelUrl: window.location.href,
+      clientReferenceId: String(userContext.doctor.id),
+      customerEmail: userContext.doctor.emailAddress
+    })
+    .then(function (result) {
+      if (result.error) {
 
-      var errorAction = () => {
-        stripe.redirectToCheckout({
-          items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
-          successUrl: window.location.href,
-          cancelUrl: window.location.href,
-          clientReferenceId: String(userContext.doctor.id),
-          customerEmail: userContext.doctor.emailAddress
-        })
-        .then(function (result) {
-          if (result.error) {
-            
-          }
-        });
-      };
-
-      setErrorAction(() => errorAction);
-    } else {
-      setErrorMessage(null);
-      setErrorAction(null);
-    }
+      }
+      setIsLoading(false);
+    });
   }
 
   const cancelSubscription = function () {
@@ -164,18 +151,13 @@ export default function MyAccount(props) {
     var response = await saveSpecialties();
     if (response && response.isSuccess) {
       userContext.setDoctor(response.doctor || null);
-      setSaveSpecialtiesIsLoading(false);
       setSaveSpecialtiesErrorMessage(null);
       setIsSpecialtySearchModalVisible(false);
       setIsSpecialtyConfirmationModalVisible(true);
     } else {
-      setSaveSpecialtiesErrorMessage(
-        response.errorMessage && response.errorMessage.length > 0 ? 
-          response.errorMessage :
-          'There was an error saving changes; please update entries and try again'
-      );
-      setSaveSpecialtiesIsLoading(false);
+      setSaveSpecialtiesErrorMessage((response && response.errorMessage) || 'There was an error saving changes; please update entries and try again');
     }
+    setSaveSpecialtiesIsLoading(false);
   }
 
   const saveSpecialties = async function () {
@@ -230,15 +212,30 @@ export default function MyAccount(props) {
           </div>
         </div>
       }
-      { !isLoading && errorMessage &&
-        <div className="mt-4 p-4 shadow sm:rounded-lg bg-red flex flex-row text-sm font-light text-white" onClick={errorAction}>
-          <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />&nbsp;&nbsp;{errorMessage}
+      { !isLoading && (userContext.doctor != null && !['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) &&
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-red flex flex-row text-sm font-light text-white" onClick={() => setupSubscription()}>
+          <CreditCardIcon className="h-6 w-6" aria-hidden="true" />&nbsp;Doctor&nbsp;<b>subscription</b>&nbsp;inactive. Tap to&nbsp;<u><i>add payment</i></u>!
         </div>
       }
       { !isLoading && (userContext.doctor != null && ['trialing', 'active'].includes(userContext.doctor.stripeSubscriptionStatus || '')) &&
-        <div className="mt-4 p-4 shadow sm:rounded-lg bg-green flex flex-row text-sm font-light text-white" onClick={() => setIsConfirmationModalVisible(true)}>
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-green flex flex-row text-sm font-light text-white" onClick={() => setIsCancelSubscriptionConfirmationModalVisible(true)}>
           Doctor subscription is&nbsp;<span className="font-bold">{userContext.doctor.stripeSubscriptionStatus}</span>&nbsp;<CheckCircleIcon className="h-5 w-5 text-red-600" aria-hidden="true" />&nbsp;-&nbsp;
           <span style={{ textDecorationLine: "underline", fontStyle: "italic" }}>Cancel?</span>
+        </div>
+      }
+      { !isLoading && (userContext.doctor != null && !userContext.doctor.practice) &&
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-red flex flex-row text-sm font-light text-white" onClick={options['Edit Practice'].action}>
+          <OfficeBuildingIcon className="h-6 w-6 text-red-600" aria-hidden="true" />&nbsp;&nbsp;No&nbsp;<b>location</b>&nbsp;entered! Tap to&nbsp;<u><i>edit practice</i></u>
+        </div>
+      }
+      { !isLoading && (userContext.doctor != null && !userContext.doctor.schedule) &&
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-red flex flex-row text-sm font-light text-white" onClick={options['Edit Schedule'].action}>
+          <CalendarIcon className="h-6 w-6 text-red-600" aria-hidden="true" />&nbsp;&nbsp;No&nbsp;<b>availability</b>&nbsp;set! Tap to&nbsp;<u><i>set schedule</i></u>
+        </div>
+      }
+      { !isLoading && (userContext.doctor != null && (!userContext.doctor.specialties || userContext.doctor.specialties.length === 0)) &&
+        <div className="mt-4 p-4 shadow sm:rounded-lg bg-red flex flex-row text-sm font-light text-white" onClick={options['Edit Specialties'].action}>
+          <BookmarkIcon className="h-6 w-6 text-red-600" aria-hidden="true" />&nbsp;&nbsp;No&nbsp;<b>specialties</b>&nbsp;set! Tap to&nbsp;<u><i>set specialties</i></u>
         </div>
       }
       { isLoading &&
@@ -268,45 +265,41 @@ export default function MyAccount(props) {
           </ul>
         </div>
         <ConfirmationModal
-          open={isConfirmationModalVisible}
+          open={isCancelSubscriptionConfirmationModalVisible}
           title={'Cancel doctor subscription?'}
           description={'Your account won\'t show up for potential patients in this app anymore. Are you sure?'}
           icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
           cancelButtonText={'No'}
           cancelButtonColor={'white'}
           onCancelButtonPress={() => {
-            setIsConfirmationModalVisible(false);
+            setIsCancelSubscriptionConfirmationModalVisible(false);
           }}
           confirmButtonText={'Yes'}
           confirmButtonColor={'red'}
           onConfirmButtonPress={async () => {
-            setIsConfirmationModalVisible(false);
+            setIsCancelSubscriptionConfirmationModalVisible(false);
             setIsLoading(true);
             var response = await cancelSubscription();
-            if (response) {
-              if (response.isSuccess) {
-                userContext.setDoctor(response.doctor || null);
-                setIsSuccessModalVisible(true);
-              } else {
-                setErrorMessage(response.errorMessage);
-              }
-              setIsLoading(false);
+            if (response && response.isSuccess) {
+              userContext.setDoctor(response.doctor || null);
+              setIsCancelSubscriptionSuccessModalVisible(true);
+              setCancelSubscriptionErrorMessage(null);
             } else {
-              setErrorMessage('There was an error cancelling. Please try again.');
-              setIsLoading(false);
+              setCancelSubscriptionErrorMessage((response && response.errorMessage) || 'There was an error cancelling. Please try again.');
             }
+            setIsLoading(false);
           }}
           >
         </ConfirmationModal>
         <ConfirmationModal
-          open={isSuccessModalVisible}
+          open={isCancelSubscriptionSuccessModalVisible}
           title={'Subscription cancelled.'}
           description={'You can activate a new subscription at any time on the My Account tab.'}
           icon={<CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />}
           cancelButtonText={'Done'}
           cancelButtonColor={'white'}
           onCancelButtonPress={() => {
-            setIsSuccessModalVisible(false);
+            setIsCancelSubscriptionSuccessModalVisible(false);
           }}
           >
         </ConfirmationModal>
