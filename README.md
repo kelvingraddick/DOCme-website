@@ -13,6 +13,10 @@ The variables you will need are:
 - Google API key (for geocoding)
 - AWS access key ID
 - AWS access key secret
+- Stripe public key
+- Stripe product ID
+- Stripe success URL
+- Stripe cancelled URL
     
 ##### Serve with hot reload at localhost:3000
 `$ npm run dev`
