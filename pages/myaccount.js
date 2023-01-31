@@ -7,7 +7,7 @@ import { LoginIcon, LogoutIcon, PencilAltIcon, InformationCircleIcon, EyeOffIcon
 import ConfirmationModal from '../components/confirmationModal';
 import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useStripe } from '@stripe/react-stripe-js';
+import { loadStripe } from "@stripe/stripe-js";
 
 export async function getStaticProps(context) {
   return {
@@ -19,8 +19,6 @@ export default function MyAccount(props) {
 
   const router = useRouter();
   const userContext = useContext(UserContext);
-
-  const stripe = useStripe();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -74,6 +72,7 @@ export default function MyAccount(props) {
 
   const setupSubscription = async function() {
     setIsLoading(true);
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
     await stripe.redirectToCheckout({
       items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
       successUrl: window.location.href,
@@ -85,6 +84,10 @@ export default function MyAccount(props) {
       if (result.error) {
 
       }
+      setIsLoading(false);
+    })
+    .catch(function (error) {
+      console.error(error);
       setIsLoading(false);
     });
   }

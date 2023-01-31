@@ -16,7 +16,6 @@ export default function SignUp() {
   const router = useRouter();
   const userContext = useContext(UserContext);
   const imageInput = useRef(null);
-  var stripe = null;
 
   const [isUserTypeSelectModalVisible, setIsUserTypeSelectModalVisible] = useState(false);
   const [selectedUserTypeOption, setSelectedUserTypeOption] = useState({});
@@ -33,10 +32,6 @@ export default function SignUp() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-
-  useEffect(async () => {
-    stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
-  });
   
   const onUserTypeOptionSelected = function(option) {
     setSelectedUserTypeOption(option);
@@ -97,6 +92,7 @@ export default function SignUp() {
         localStorage.setItem('TOKEN', response.token);
         setIsLoading(false);
         if (response.doctor) {
+          const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
           stripe.redirectToCheckout({
             items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
             successUrl: window.location.protocol + '//' + window.location.host + '/myaccount/',
@@ -108,6 +104,9 @@ export default function SignUp() {
             if (result.error) {
               
             }
+          })
+          .catch(function (error) {
+            console.error(error);
           });
         } else {
           router.push('/myaccount/');
