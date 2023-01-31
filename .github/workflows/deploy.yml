@@ -19,6 +19,12 @@ jobs:
       uses: SpicyPizza/create-envfile@v1
       with:
         envkey_NEXT_PUBLIC_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        envkey_NEXT_PUBLIC_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        envkey_NEXT_PUBLIC_AWS_ACCESS_KEY_SECRET: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+        envkey_NEXT_PUBLIC_STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+        envkey_NEXT_PUBLIC_STRIPE_PRODUCT_ID: ${{ secrets.STRIPE_PRODUCT_ID }}
+        envkey_NEXT_PUBLIC_STRIPE_SUCCESS_URL: https://app.docmeapp.com/checkout/success/
+        envkey_NEXT_PUBLIC_STRIPE_CANCELED_URL: https://app.docmeapp.com/checkout/canceled/
         file_name: .env.local
     - name: Read environment file
       id: env-file
