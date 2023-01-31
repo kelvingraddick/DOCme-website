@@ -93,7 +93,7 @@ export default function MyAccount(props) {
   }
 
   const cancelSubscription = function () {
-    return fetch('http://www.docmeapp.com/doctor/' + userContext.doctor.id + '/cancel/subscription', {
+    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/cancel/subscription', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ export default function MyAccount(props) {
   }
 
   const getSpecialtyOptions = async function(text) {
-    var url = 'http://www.docmeapp.com/specialty/' + ((text && text.length > 0) ? ('search/' + encodeURIComponent(text)) : 'list/');
+    var url = 'https://www.docmeapp.com/specialty/' + ((text && text.length > 0) ? ('search/' + encodeURIComponent(text)) : 'list/');
     var specialties = await fetch(url, { method: 'GET' })
       .then((response) => { 
         if (response.status == 200) {
@@ -167,7 +167,7 @@ export default function MyAccount(props) {
     var body = {
       specialtyIds: selectedSpecialtyOptionIds
     };
-    return fetch('http://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/specialties', {
+    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/specialties', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

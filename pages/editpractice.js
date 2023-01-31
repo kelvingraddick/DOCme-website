@@ -136,7 +136,7 @@ export default function EditPractice() {
       countryCode: selectedCountryCodeOption.id,
       imageUrl: image && image.url
     };
-    return fetch('http://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/practice', {
+    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/practice', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

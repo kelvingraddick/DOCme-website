@@ -264,7 +264,7 @@ export default function EditSchedule() {
       saturdayBreakEndTime: saturdayIsEnabled ? saturdayBreakEndTime : null,
     };
 
-    return fetch('http://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/schedule', {
+    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/schedule', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

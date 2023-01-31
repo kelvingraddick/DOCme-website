@@ -33,7 +33,7 @@ export default function EditAppointment(props) {
 
   useEffect(async () => {
     if(!router.isReady) return;
-    var appointment = await fetch('http://www.docmeapp.com/appointment/' + appointmentId, { 
+    var appointment = await fetch('https://www.docmeapp.com/appointment/' + appointmentId, { 
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default function EditAppointment(props) {
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
 
-    var specialties = await fetch('http://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
+    var specialties = await fetch('https://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -149,7 +149,7 @@ export default function EditAppointment(props) {
       isNewPatient: true,
       notes: notes
     };
-    return await fetch('http://www.docmeapp.com/appointment/' + appointment.id + '/update/', {
+    return await fetch('https://www.docmeapp.com/appointment/' + appointment.id + '/update/', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export default function EditAppointment(props) {
   }
 
   const deleteAppointment = async function () {
-    return await fetch('http://www.docmeapp.com/appointment/' + appointment.id + '/delete/', {
+    return await fetch('https://www.docmeapp.com/appointment/' + appointment.id + '/delete/', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ const withEmailAddressAndPassword = async function(userType, emailAddress, passw
     emailAddress: emailAddress,
     password: password
   };
-  return fetch('http://www.docmeapp.com/' + userType + '/authenticate', {
+  return fetch('https://www.docmeapp.com/' + userType + '/authenticate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -34,7 +34,7 @@ const withEmailAddressAndPassword = async function(userType, emailAddress, passw
 
 const withToken = async function(userType, token) {
   console.log('Login: Attempt to login with user type and token: ' + userType + ' ' + token);
-  return fetch('http://www.docmeapp.com/' + userType + '/authorize', {
+  return fetch('https://www.docmeapp.com/' + userType + '/authorize', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token }
   })

@@ -69,7 +69,7 @@ export default function ResetPassword() {
   };
 
   const submit = async function () {
-    var url = 'http://www.docmeapp.com/' + selectedUserTypeOption.id + '/update/password/' + code;
+    var url = 'https://www.docmeapp.com/' + selectedUserTypeOption.id + '/update/password/' + code;
     var body = {
       newPassword: newPassword
     };

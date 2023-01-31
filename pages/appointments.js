@@ -25,7 +25,7 @@ export default function Appointments(props) {
   const getAppointments = async function () {
     if ((!userContext.patient && !userContext.doctor) || !userContext.token) return;
 
-    var url = 'http://www.docmeapp.com/appointment/' + (userContext.patient ? ('patient/' + userContext.patient.id) : ('doctor/' + userContext.doctor.id)) + '/list';
+    var url = 'https://www.docmeapp.com/appointment/' + (userContext.patient ? ('patient/' + userContext.patient.id) : ('doctor/' + userContext.doctor.id)) + '/list';
     var appointments = await fetch(url, { 
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + userContext.token }

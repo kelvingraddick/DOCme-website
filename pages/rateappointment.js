@@ -29,7 +29,7 @@ export default function RateAppointment(props) {
 
   useEffect(async () => {
     if(!router.isReady) return;
-    var appointment = await fetch('http://www.docmeapp.com/appointment/' + appointmentId, { 
+    var appointment = await fetch('https://www.docmeapp.com/appointment/' + appointmentId, { 
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ export default function RateAppointment(props) {
       value: selectedValueOption.id,
       notes: notes
     };
-    return await fetch('http://www.docmeapp.com/rating/upsert', {
+    return await fetch('https://www.docmeapp.com/rating/upsert', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

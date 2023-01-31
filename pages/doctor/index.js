@@ -24,7 +24,7 @@ export default function Doctor(props) {
   useEffect(async () => {
     if(!router.isReady) return;
 
-    var doctor = await fetch('http://www.docmeapp.com/doctor/' + router.query.id, { method: 'GET' })
+    var doctor = await fetch('https://www.docmeapp.com/doctor/' + router.query.id, { method: 'GET' })
       .then((response) => { 
         if (response.status == 200) {
           return response.json()

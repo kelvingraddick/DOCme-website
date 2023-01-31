@@ -26,7 +26,7 @@ export default function Home() {
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
 
-    var specialties = await fetch('http://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
+    var specialties = await fetch('https://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -55,7 +55,7 @@ export default function Home() {
   const onInsuranceCarrierSearchBoxChangeText = async function(text) {
     if (!text) return [];
 
-    var insuranceCarriers = await fetch('http://www.docmeapp.com/insurance/carriers/search/' + encodeURIComponent(text), { method: 'GET' })
+    var insuranceCarriers = await fetch('https://www.docmeapp.com/insurance/carriers/search/' + encodeURIComponent(text), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -83,7 +83,7 @@ export default function Home() {
     setIsInsurancePlanSearchModalVisible(false);
     setInsurancePlanOptions([]);
 
-    var insurancePlans = await fetch('http://www.docmeapp.com/insurance/carrier/' + option.id + '/plans', { method: 'GET' })
+    var insurancePlans = await fetch('https://www.docmeapp.com/insurance/carrier/' + option.id + '/plans', { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -114,7 +114,7 @@ export default function Home() {
     if (postalCode) { parameters.push({ key: 'postalCode', value: postalCode }) }
     if (selectedInsurancePlanOption.id) { parameters.push({ key: 'insurancePlanId', value: selectedInsurancePlanOption.id }) }
 
-    var doctors = await fetch('http://www.docmeapp.com/doctor/search' + (parameters.length > 0 ? '?' + parameters.map((parameter) => { return parameter.key + '=' + parameter.value }).join('&') : ''), { method: 'GET' })
+    var doctors = await fetch('https://www.docmeapp.com/doctor/search' + (parameters.length > 0 ? '?' + parameters.map((parameter) => { return parameter.key + '=' + parameter.value }).join('&') : ''), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()

@@ -63,7 +63,7 @@ export default function ForgotPassword() {
   };
 
   const submit = async function () {
-    var url = 'http://www.docmeapp.com/' + selectedUserTypeOption.id + '/reset/password/request';
+    var url = 'https://www.docmeapp.com/' + selectedUserTypeOption.id + '/reset/password/request';
     var body = {
       emailAddress: emailAddress
     };

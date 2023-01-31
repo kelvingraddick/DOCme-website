@@ -151,7 +151,7 @@ export default function SignUp() {
       race: selectedRaceOption.id,
       imageUrl: imageUrl
     };
-    return fetch('http://www.docmeapp.com/' + selectedUserTypeOption.id + '/register', {
+    return fetch('https://www.docmeapp.com/' + selectedUserTypeOption.id + '/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)

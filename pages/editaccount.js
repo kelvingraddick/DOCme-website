@@ -94,7 +94,7 @@ export default function EditAccount() {
   };
 
   const save = async function () {
-    var url = 'http://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update';
+    var url = 'https://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update';
     var body = {
       firstName: firstName,
       lastName: lastName,
@@ -128,7 +128,7 @@ export default function EditAccount() {
   }
 
   const deleteAccount = function () {
-    return fetch('http://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/', {
+    return fetch('https://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

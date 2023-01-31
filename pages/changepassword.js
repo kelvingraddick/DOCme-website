@@ -61,7 +61,7 @@ export default function ChangePassword() {
   };
 
   const save = async function () {
-    var url = 'http://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update/password';
+    var url = 'https://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update/password';
     var body = {
       currentPassword: currentPassword,
       newPassword: newPassword
