@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ConfirmationModal from '../components/confirmationModal';
 import Colors from '../constants/colors';
+import { apiUrl } from '../helpers/urls';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -264,7 +265,7 @@ export default function EditSchedule() {
       saturdayBreakEndTime: saturdayIsEnabled ? saturdayBreakEndTime : null,
     };
 
-    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/schedule', {
+    return fetch(apiUrl('/doctor/' + userContext.doctor.id + '/update/schedule'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

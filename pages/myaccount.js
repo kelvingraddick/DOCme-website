@@ -8,6 +8,7 @@ import ConfirmationModal from '../components/confirmationModal';
 import Layout from '../components/layout';
 import 'react-datepicker/dist/react-datepicker.css';
 import { loadStripe } from "@stripe/stripe-js";
+import { apiUrl, stripeCanceledUrl, stripeSuccessUrl } from '../helpers/urls';
 
 export async function getStaticProps(context) {
   return {
@@ -75,8 +76,8 @@ export default function MyAccount(props) {
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
     await stripe.redirectToCheckout({
       items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
-      successUrl: window.location.href,
-      cancelUrl: window.location.href,
+      successUrl: stripeSuccessUrl,
+      cancelUrl: stripeCanceledUrl,
       clientReferenceId: String(userContext.doctor.id),
       customerEmail: userContext.doctor.emailAddress
     })
@@ -93,7 +94,7 @@ export default function MyAccount(props) {
   }
 
   const cancelSubscription = function () {
-    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/cancel/subscription', {
+    return fetch(apiUrl('/doctor/' + userContext.doctor.id + '/cancel/subscription'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +118,7 @@ export default function MyAccount(props) {
   }
 
   const getSpecialtyOptions = async function(text) {
-    var url = 'https://www.docmeapp.com/specialty/' + ((text && text.length > 0) ? ('search/' + encodeURIComponent(text)) : 'list/');
+    var url = apiUrl('/specialty/' + ((text && text.length > 0) ? ('search/' + encodeURIComponent(text)) : 'list/'));
     var specialties = await fetch(url, { method: 'GET' })
       .then((response) => { 
         if (response.status == 200) {
@@ -167,7 +168,7 @@ export default function MyAccount(props) {
     var body = {
       specialtyIds: selectedSpecialtyOptionIds
     };
-    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/specialties', {
+    return fetch(apiUrl('/doctor/' + userContext.doctor.id + '/update/specialties'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

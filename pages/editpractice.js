@@ -9,6 +9,7 @@ import Colors from '../constants/colors';
 import Cities from '../constants/cities';
 import Countries from '../constants/countries';
 import States from '../constants/states';
+import { apiUrl } from '../helpers/urls';
 
 export default function EditPractice() {
   
@@ -136,7 +137,7 @@ export default function EditPractice() {
       countryCode: selectedCountryCodeOption.id,
       imageUrl: image && image.url
     };
-    return fetch('https://www.docmeapp.com/doctor/' + userContext.doctor.id + '/update/practice', {
+    return fetch(apiUrl('/doctor/' + userContext.doctor.id + '/update/practice'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

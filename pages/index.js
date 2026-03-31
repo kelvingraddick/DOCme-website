@@ -4,6 +4,7 @@ import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
 import DoctorRow from '../components/doctorRow';
 import Colors from '../constants/colors';
+import { apiUrl } from '../helpers/urls';
 
 export default function Home() {
   
@@ -26,7 +27,7 @@ export default function Home() {
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
 
-    var specialties = await fetch('https://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
+    var specialties = await fetch(apiUrl('/specialty/search/' + encodeURIComponent(text)), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -55,7 +56,7 @@ export default function Home() {
   const onInsuranceCarrierSearchBoxChangeText = async function(text) {
     if (!text) return [];
 
-    var insuranceCarriers = await fetch('https://www.docmeapp.com/insurance/carriers/search/' + encodeURIComponent(text), { method: 'GET' })
+    var insuranceCarriers = await fetch(apiUrl('/insurance/carriers/search/' + encodeURIComponent(text)), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -83,7 +84,7 @@ export default function Home() {
     setIsInsurancePlanSearchModalVisible(false);
     setInsurancePlanOptions([]);
 
-    var insurancePlans = await fetch('https://www.docmeapp.com/insurance/carrier/' + option.id + '/plans', { method: 'GET' })
+    var insurancePlans = await fetch(apiUrl('/insurance/carrier/' + option.id + '/plans'), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -114,7 +115,7 @@ export default function Home() {
     if (postalCode) { parameters.push({ key: 'postalCode', value: postalCode }) }
     if (selectedInsurancePlanOption.id) { parameters.push({ key: 'insurancePlanId', value: selectedInsurancePlanOption.id }) }
 
-    var doctors = await fetch('https://www.docmeapp.com/doctor/search' + (parameters.length > 0 ? '?' + parameters.map((parameter) => { return parameter.key + '=' + parameter.value }).join('&') : ''), { method: 'GET' })
+    var doctors = await fetch(apiUrl('/doctor/search' + (parameters.length > 0 ? '?' + parameters.map((parameter) => { return parameter.key + '=' + parameter.value }).join('&') : '')), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()

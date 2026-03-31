@@ -4,6 +4,7 @@ import { StarIcon } from '@heroicons/react/solid';
 import Moment from 'moment';
 import Layout from '../../../components/layout';
 import DoctorRow from '../../../components/doctorRow';
+import { apiUrl } from '../../../helpers/urls';
 
 export default function DoctorRatings(props) {
   const router = useRouter();
@@ -12,7 +13,7 @@ export default function DoctorRatings(props) {
 
   useEffect(async () => {
     if(!router.isReady) return;
-    var ratings = await fetch('https://www.docmeapp.com/rating/doctor/' + router.query.id + '/list/', { method: 'GET' })
+    var ratings = await fetch(apiUrl('/rating/doctor/' + router.query.id + '/list/'), { method: 'GET' })
       .then((response) => { 
         if (response.status == 200) {
           return response.json()

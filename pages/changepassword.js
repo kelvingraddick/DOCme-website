@@ -5,6 +5,7 @@ import { ExclamationIcon, CheckIcon } from '@heroicons/react/solid';
 import Layout from '../components/layout';
 import ConfirmationModal from '../components/confirmationModal';
 import Colors from '../constants/colors';
+import { apiUrl } from '../helpers/urls';
 
 export default function ChangePassword() {
   
@@ -61,7 +62,7 @@ export default function ChangePassword() {
   };
 
   const save = async function () {
-    var url = 'https://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update/password';
+    var url = apiUrl((userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update/password');
     var body = {
       currentPassword: currentPassword,
       newPassword: newPassword

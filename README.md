@@ -10,13 +10,20 @@
 Copy the file `.env.local.example` to a new file named `.env.local` and then edit it with the environment specific settings. This new file will be ignored by Git (don't need to ever commit).
 The variables you will need are:
 
+- API base URL
+- App base URL
 - Google API key (for geocoding)
 - AWS access key ID
 - AWS access key secret
 - Stripe public key
 - Stripe product ID
-- Stripe success URL
-- Stripe cancelled URL
+
+Optional variables:
+
+- Stripe success URL override
+- Stripe cancelled URL override
+
+Most domain changes can now be handled by updating `NEXT_PUBLIC_API_BASE_URL` and `NEXT_PUBLIC_APP_BASE_URL` in one place.
     
 ##### Serve with hot reload at localhost:3000
 `$ npm run dev`

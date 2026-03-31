@@ -21,21 +21,14 @@ jobs:
     - name: Create environment file
       uses: SpicyPizza/create-envfile@v1
       with:
+        envkey_NEXT_PUBLIC_API_BASE_URL: ${{ vars.API_BASE_URL }}
+        envkey_NEXT_PUBLIC_APP_BASE_URL: ${{ vars.APP_BASE_URL }}
         envkey_NEXT_PUBLIC_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         envkey_NEXT_PUBLIC_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         envkey_NEXT_PUBLIC_AWS_ACCESS_KEY_SECRET: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
         envkey_NEXT_PUBLIC_STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
         envkey_NEXT_PUBLIC_STRIPE_PRODUCT_ID: ${{ secrets.STRIPE_PRODUCT_ID }}
-        envkey_NEXT_PUBLIC_STRIPE_SUCCESS_URL: https://app.docmeapp.com/checkout/success/
-        envkey_NEXT_PUBLIC_STRIPE_CANCELED_URL: https://app.docmeapp.com/checkout/canceled/
         file_name: .env.local
-    - name: Read environment file
-      id: env-file
-      uses: juliangruber/read-file-action@v1.1.4
-      with:
-        path: .env.local
-    - name: Log environment file
-      run: echo "${{ steps.env-file.outputs.content }}"
     - name: Build and export project
       run: 
         npm run build

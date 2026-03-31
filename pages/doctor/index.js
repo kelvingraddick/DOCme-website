@@ -10,6 +10,7 @@ import GoogleMapReact from 'google-map-react';
 import Moment from 'moment';
 import Genders from '../../constants/genders';
 import Races from '../../constants/races';
+import { apiUrl } from '../../helpers/urls';
 
 export default function Doctor(props) {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function Doctor(props) {
   useEffect(async () => {
     if(!router.isReady) return;
 
-    var doctor = await fetch('https://www.docmeapp.com/doctor/' + router.query.id, { method: 'GET' })
+    var doctor = await fetch(apiUrl('/doctor/' + router.query.id), { method: 'GET' })
       .then((response) => { 
         if (response.status == 200) {
           return response.json()

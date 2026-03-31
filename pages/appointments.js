@@ -6,6 +6,7 @@ import { UserContext } from '../context/userContext';
 import Moment from 'moment';
 import Layout from '../components/layout';
 import Colors from '../constants/colors';
+import { apiUrl } from '../helpers/urls';
 
 export async function getStaticProps(context) {
   return {
@@ -25,7 +26,7 @@ export default function Appointments(props) {
   const getAppointments = async function () {
     if ((!userContext.patient && !userContext.doctor) || !userContext.token) return;
 
-    var url = 'https://www.docmeapp.com/appointment/' + (userContext.patient ? ('patient/' + userContext.patient.id) : ('doctor/' + userContext.doctor.id)) + '/list';
+    var url = apiUrl('/appointment/' + (userContext.patient ? ('patient/' + userContext.patient.id) : ('doctor/' + userContext.doctor.id)) + '/list');
     var appointments = await fetch(url, { 
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + userContext.token }

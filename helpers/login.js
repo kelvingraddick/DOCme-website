@@ -1,4 +1,5 @@
 //import OneSignal from 'react-native-onesignal';
+import { apiUrl } from './urls';
 
 const withEmailAddressAndPassword = async function(userType, emailAddress, password) {
   console.log('Login: Attempt to login with creds: ' + userType + ' ' + emailAddress + ' ');
@@ -8,7 +9,7 @@ const withEmailAddressAndPassword = async function(userType, emailAddress, passw
     emailAddress: emailAddress,
     password: password
   };
-  return fetch('https://www.docmeapp.com/' + userType + '/authenticate', {
+  return fetch(apiUrl('/' + userType + '/authenticate'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -34,7 +35,7 @@ const withEmailAddressAndPassword = async function(userType, emailAddress, passw
 
 const withToken = async function(userType, token) {
   console.log('Login: Attempt to login with user type and token: ' + userType + ' ' + token);
-  return fetch('https://www.docmeapp.com/' + userType + '/authorize', {
+  return fetch(apiUrl('/' + userType + '/authorize'), {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token }
   })
@@ -68,7 +69,7 @@ function _setOneSignalExternalUserId(userType, id) {
   */
 };
 
-module.exports = {
+export default {
   withEmailAddressAndPassword: withEmailAddressAndPassword,
   withToken: withToken,
 };

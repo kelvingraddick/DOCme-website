@@ -11,6 +11,7 @@ import Moment from 'moment';
 import Colors from '../constants/colors';
 import Genders from '../constants/genders';
 import Races from '../constants/races';
+import { apiUrl } from '../helpers/urls';
 
 export default function EditAppointment(props) {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function EditAppointment(props) {
 
   useEffect(async () => {
     if(!router.isReady) return;
-    var appointment = await fetch('https://www.docmeapp.com/appointment/' + appointmentId, { 
+    var appointment = await fetch(apiUrl('/appointment/' + appointmentId), { 
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',
@@ -63,7 +64,7 @@ export default function EditAppointment(props) {
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
 
-    var specialties = await fetch('https://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
+    var specialties = await fetch(apiUrl('/specialty/search/' + encodeURIComponent(text)), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -149,7 +150,7 @@ export default function EditAppointment(props) {
       isNewPatient: true,
       notes: notes
     };
-    return await fetch('https://www.docmeapp.com/appointment/' + appointment.id + '/update/', {
+    return await fetch(apiUrl('/appointment/' + appointment.id + '/update/'), {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -174,7 +175,7 @@ export default function EditAppointment(props) {
   }
 
   const deleteAppointment = async function () {
-    return await fetch('https://www.docmeapp.com/appointment/' + appointment.id + '/delete/', {
+    return await fetch(apiUrl('/appointment/' + appointment.id + '/delete/'), {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

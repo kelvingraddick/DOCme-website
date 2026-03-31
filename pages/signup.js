@@ -10,6 +10,7 @@ import UserTypes from '../constants/userTypes';
 import Genders from '../constants/genders';
 import Races from '../constants/races';
 import { loadStripe } from "@stripe/stripe-js";
+import { apiUrl, stripeCanceledUrl, stripeSuccessUrl } from '../helpers/urls';
 
 export default function SignUp() {
   
@@ -95,8 +96,8 @@ export default function SignUp() {
           const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
           stripe.redirectToCheckout({
             items: [{ plan: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID, quantity: 1 }],
-            successUrl: window.location.protocol + '//' + window.location.host + '/myaccount/',
-            cancelUrl: window.location.protocol + '//' + window.location.host + '/myaccount/',
+            successUrl: stripeSuccessUrl,
+            cancelUrl: stripeCanceledUrl,
             clientReferenceId: String(response.doctor.id),
             customerEmail: response.doctor.emailAddress
           })
@@ -151,7 +152,7 @@ export default function SignUp() {
       race: selectedRaceOption.id,
       imageUrl: imageUrl
     };
-    return fetch('https://www.docmeapp.com/' + selectedUserTypeOption.id + '/register', {
+    return fetch(apiUrl('/' + selectedUserTypeOption.id + '/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)

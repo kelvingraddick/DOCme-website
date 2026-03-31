@@ -8,6 +8,7 @@ import ConfirmationModal from '../components/confirmationModal';
 import Colors from '../constants/colors';
 import Genders from '../constants/genders';
 import Races from '../constants/races';
+import { apiUrl } from '../helpers/urls';
 
 export default function EditAccount() {
   
@@ -94,7 +95,7 @@ export default function EditAccount() {
   };
 
   const save = async function () {
-    var url = 'https://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update';
+    var url = apiUrl((userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/update');
     var body = {
       firstName: firstName,
       lastName: lastName,
@@ -128,7 +129,7 @@ export default function EditAccount() {
   }
 
   const deleteAccount = function () {
-    return fetch('https://www.docmeapp.com' + (userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/', {
+    return fetch(apiUrl((userContext.patient ? '/patient/' + userContext.patient.id : '/doctor/' + userContext.doctor.id) + '/'), {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

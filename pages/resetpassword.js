@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { ExclamationIcon } from '@heroicons/react/solid';
@@ -7,6 +7,7 @@ import Layout from '../components/layout';
 import SearchModal from '../components/searchModal';
 import Colors from '../constants/colors';
 import UserTypes from '../constants/userTypes';
+import { apiUrl } from '../helpers/urls';
 
 export default function ResetPassword() {
   
@@ -69,7 +70,7 @@ export default function ResetPassword() {
   };
 
   const submit = async function () {
-    var url = 'https://www.docmeapp.com/' + selectedUserTypeOption.id + '/update/password/' + code;
+    var url = apiUrl('/' + selectedUserTypeOption.id + '/update/password/' + code);
     var body = {
       newPassword: newPassword
     };

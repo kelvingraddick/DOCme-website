@@ -9,6 +9,7 @@ import DoctorRow from '../components/doctorRow';
 import 'react-datepicker/dist/react-datepicker.css';
 import Moment from 'moment';
 import Colors from '../constants/colors';
+import { apiUrl } from '../helpers/urls';
 
 export default function BookAppointment(props) {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function BookAppointment(props) {
 
   useEffect(async () => {
     if(!router.isReady) return;
-    var doctor = await fetch('https://www.docmeapp.com/doctor/' + doctorId, { method: 'GET' })
+    var doctor = await fetch(apiUrl('/doctor/' + doctorId), { method: 'GET' })
       .then((response) => { 
         if (response.status == 200) {
           return response.json()
@@ -54,7 +55,7 @@ export default function BookAppointment(props) {
   const onSpecialtySearchBoxChangeText = async function(text) {
     if (!text) return [];
 
-    var specialties = await fetch('https://www.docmeapp.com/specialty/search/' + encodeURIComponent(text), { method: 'GET' })
+    var specialties = await fetch(apiUrl('/specialty/search/' + encodeURIComponent(text)), { method: 'GET' })
     .then((response) => { 
       if (response.status == 200) {
         return response.json()
@@ -124,7 +125,7 @@ export default function BookAppointment(props) {
       isNewPatient: true,
       notes: notes
     };
-    return await fetch('https://www.docmeapp.com/appointment/book', {
+    return await fetch(apiUrl('/appointment/book'), {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
