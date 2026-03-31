@@ -5,6 +5,9 @@
 ##### Install dependencies
 `$ npm install`
 
+##### Use the recommended Node version
+`$ nvm use`
+
 ##### Configure environment variables
 
 Copy the file `.env.local.example` to a new file named `.env.local` and then edit it with the environment specific settings. This new file will be ignored by Git (don't need to ever commit).
